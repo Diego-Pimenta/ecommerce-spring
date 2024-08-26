@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,22 +16,18 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-//                .components(new Components().addSecuritySchemes("security", securityScheme()))
+                .components(new Components().addSecuritySchemes("security", new SecurityScheme()
+                                        .name("security")
+                                        .description("Authentication required with bearer token")
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")))
                 .info(new Info()
                         .title("Demo Ecommerce API")
                         .description("API documentation for managing products, sales and users")
-                        .version("v0.0.1-SNAPSHOT")
+                        .version("v1.0")
                         .license(new License().name("Apache License").url("https://www.apache.org/licenses/LICENSE-2.0"))
                         .contact(new Contact().name("Diego Pimenta").email("diegopimenta888@gmail.com")));
     }
-
-//    private SecurityScheme securityScheme() {
-//        return new SecurityScheme()
-//                .name("security")
-//                .description("Authentication required with bearer token")
-//                .type(SecurityScheme.Type.HTTP)
-//                .in(SecurityScheme.In.HEADER)
-//                .scheme("bearer")
-//                .bearerFormat("JWT");
-//    }
 }
