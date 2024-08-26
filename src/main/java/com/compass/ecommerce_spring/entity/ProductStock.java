@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,16 +29,17 @@ public class ProductStock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 80)
+    @Column(nullable = false, length = 80, unique = true)
     private String name;
     @Column(nullable = false)
     private Integer quantity;
     @Column(nullable = false, name = "unit_price", precision = 10, scale = 2)
     private BigDecimal unitPrice;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 30)
     private String category;
     @Column(nullable = false)
     private Boolean inactive = false; // para ser inativado ele deve ser "deletado" primeiro
+    @JsonIgnore
     @OneToMany(mappedBy = "id.product")
     private Set<SaleItem> items = new HashSet<>();
 }

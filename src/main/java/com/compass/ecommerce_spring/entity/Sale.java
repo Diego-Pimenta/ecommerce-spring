@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,6 +37,6 @@ public class Sale {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "customer_cpf")
     private User customer;
-    @OneToMany(mappedBy = "id.sale")
+    @OneToMany(mappedBy = "id.sale", cascade = CascadeType.ALL)
     private Set<SaleItem> items = new HashSet<>();
 }

@@ -29,8 +29,8 @@ public class SaleItem {
     private BigDecimal discount;
 
     public SaleItem(Sale sale, ProductStock product, Integer quantity, BigDecimal price, BigDecimal discount) {
-        this.id.setSale(sale);
-        this.id.setProduct(product);
+        id.setSale(sale);
+        id.setProduct(product);
         this.quantity = quantity;
         this.price = price;
         this.discount = discount;
