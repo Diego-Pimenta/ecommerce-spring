@@ -5,11 +5,12 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --save 60 1 --loglevel warning --requirepass redispass
+    environment:
+      - REDIS_PASSWORD=redispass
     volumes:
       - cache:/data
     networks:
-      - backend-net
+      - backend
 
   mysqldb:
     image: mysql:latest
@@ -24,15 +25,19 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpass
     volumes:
       - data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
-      - backend-net
+      - backend
 
 volumes:
   cache:
+    name: cache
     driver: local
   data:
+    name: data
     driver: local
 
 networks:
-  backend-net:
+  backend:
+    name: backend-net
     driver: bridge
