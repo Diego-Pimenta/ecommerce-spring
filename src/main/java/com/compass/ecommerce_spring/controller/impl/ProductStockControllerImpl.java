@@ -1,7 +1,8 @@
 package com.compass.ecommerce_spring.controller.impl;
 
 import com.compass.ecommerce_spring.controller.ProductStockController;
-import com.compass.ecommerce_spring.dto.request.ProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import jakarta.validation.Valid;
@@ -29,8 +30,8 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @PostMapping
     @Override
-    public ResponseEntity<ProductStockResponseDto> save(@RequestBody @Valid ProductStockRequestDto productStockRequestDto) {
-        ProductStockResponseDto productStockResponseDto = service.save(productStockRequestDto);
+    public ResponseEntity<ProductStockResponseDto> save(@RequestBody @Valid CreateProductStockRequestDto createProductStockRequestDto) {
+        ProductStockResponseDto productStockResponseDto = service.save(createProductStockRequestDto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(productStockResponseDto.id()).toUri();
         return ResponseEntity.created(uri).body(productStockResponseDto);
@@ -50,8 +51,8 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> update(@PathVariable Long id, @RequestBody @Valid ProductStockRequestDto productStockRequestDto) {
-        return ResponseEntity.ok(service.update(id, productStockRequestDto));
+    public ResponseEntity<ProductStockResponseDto> update(@PathVariable Long id, @RequestBody @Valid UpdateProductStockRequestDto updateProductStockRequestDto) {
+        return ResponseEntity.ok(service.update(id, updateProductStockRequestDto));
     }
 
     @DeleteMapping("/{id}")
