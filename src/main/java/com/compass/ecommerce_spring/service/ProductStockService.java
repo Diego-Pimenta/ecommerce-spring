@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductStockService {
 
-    ProductStockResponseDto save(CreateProductStockRequestDto productStockRequestDto);
+    ProductStockResponseDto save(CreateProductStockRequestDto createProductStockRequestDto);
 
     ProductStockResponseDto findById(Long id);
 

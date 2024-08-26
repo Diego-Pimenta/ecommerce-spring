@@ -38,7 +38,6 @@ public class User {
     private String phoneNumber;
     @Column(nullable = false, length = 100)
     private String address;
-    @Column(nullable = false, length = 6)
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.CLIENT; // para ser ADMIN um user admin deve dar permissão
     @OneToMany(mappedBy = "customer")

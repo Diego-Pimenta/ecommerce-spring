@@ -22,7 +22,7 @@ public record UpdateProductStockRequestDto(
         @NotBlank(message = "Invalid category: Category must not be blank")
         @Size(max = 30, message = "Invalid category: Category must not be longer than 50 characters")
         String category,
-        @NotBlank(message = "Invalid inactive status: Inactive status must be true or false")
+        @NotNull(message = "Invalid inactive status: Inactive status must be true or false")
         @JsonProperty("inactive_status")
         Boolean inactive
 ) {

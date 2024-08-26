@@ -85,14 +85,16 @@ public class ProductStockServiceImpl implements ProductStockService {
     @CacheEvict(value = "products", allEntries = true)
     @Override
     public void delete(Long id) {
-        var product = repository.findById(id)
+        repository.findById(id)
+                .map(p -> {
+                    if (p.getItems().isEmpty()) {
+                        repository.deleteById(id);
+                    } else {
+                        p.setInactive(true);
+                        repository.save(p);
+                    }
+                    return p;
+                })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
-
-        if (product.getItems().isEmpty()) {
-            repository.deleteById(id);
-        } else {
-            product.setInactive(true);
-            repository.save(product);
-        }
     }
 }

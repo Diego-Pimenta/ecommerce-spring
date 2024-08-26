@@ -1,16 +1,20 @@
 package com.compass.ecommerce_spring.util;
 
+import com.compass.ecommerce_spring.entity.enums.Role;
 import com.compass.ecommerce_spring.security.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -29,14 +33,17 @@ public class JwtUtil {
     }
 
     public String createToken(UserDetails userDetails) {
-        var authorities = userDetails.getAuthorities();
+        String authority = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
         var username = userDetails.getUsername();
         var issuedAt = new Date(System.currentTimeMillis());
         var expiration = new Date(System.currentTimeMillis() + getExpirationTime());
 
         return Jwts
                 .builder()
-                .claim("authorities", authorities)
+                .claim("authority", authority)
                 .subject(username)
                 .issuedAt(issuedAt)
                 .expiration(expiration)

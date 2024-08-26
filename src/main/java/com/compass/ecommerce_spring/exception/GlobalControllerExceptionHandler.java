@@ -7,6 +7,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -36,6 +37,15 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(status).body(standardError);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        String path = request.getDescription(false).replace("uri=", "");
+        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
+        return ResponseEntity.status(status).body(standardError);
+    }
+
     @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.FORBIDDEN;
@@ -55,7 +65,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<StandardError> handleUserAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
+    public ResponseEntity<StandardError> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         List<String> errors = Collections.singletonList(ex.getMessage());
         String path = request.getDescription(false).replace("uri=", "");
@@ -75,6 +85,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ex.printStackTrace();
         List<String> errors = Collections.singletonList(ex.getMessage());
         String path = request.getDescription(false).replace("uri=", "");
         StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
