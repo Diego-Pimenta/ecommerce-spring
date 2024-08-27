@@ -10,6 +10,39 @@
 			"name": "Public",
 			"item": [
 				{
+					"name": "Create-User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cpf\": \"12345678903\",\n    \"name\": \"Novo Usuário\",\n    \"email\": \"novato@example.com\",\n    \"password\": \"segredo1\",\n    \"phone_number\": \"(13)99999-9999\",\n    \"address\": \"Lugar Desconhecido\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/users",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Login-Authentication",
 					"event": [
 						{
@@ -58,9 +91,9 @@
 					"response": []
 				},
 				{
-					"name": "Reset-Password",
+					"name": "Update-User-Password-By-Cpf",
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Accept",
@@ -69,12 +102,24 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"old_password\": \"\",\n    \"new_password\": \"\"\n}",
+							"raw": "{\n    \"old_password\": \"password\",\n    \"new_password\": \"newpassword\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/change-password/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"change-password",
+								"12345678902"
+							]
 						}
 					},
 					"response": []
@@ -216,14 +261,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-gateway}}/v1/products/update-status/1",
+							"raw": "{{api-gateway}}/v1/products/status/1",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"products",
-								"update-status",
+								"status",
 								"1"
 							]
 						}
@@ -249,6 +294,185 @@
 								"v1",
 								"products",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get-User-By-Cpf",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"12345678902"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-All-Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/users",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update-User-By-Cpf",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"novato2@example.com\",\n    \"password\": \"segredo2\",\n    \"phone_number\": \"(14)99999-9999\",\n    \"address\": \"Lugar Conhecido\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"12345678902"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update-User-Role-By-Cpf",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"12345678902"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete-User-By-Cpf",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"12345678902"
 							]
 						}
 					},
