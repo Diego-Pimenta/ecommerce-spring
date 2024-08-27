@@ -75,26 +75,30 @@ public class ProductStockServiceImpl implements ProductStockService {
         return mapper.toDto(updatedProductStock);
     }
 
-    // TODO: implement logic
     @CachePut(value = "products", key = "#id")
     @Override
     public ProductStockResponseDto updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto) {
-        return null;
+        // TODO: fix DataIntegrityViolation (Columns receiving null values)
+        repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
+
+        var product = mapper.updateProductStockStatusToEntity(id, updateProductStockStatusRequestDto);
+        product.setInactive(updateProductStockStatusRequestDto.inactive());
+        var updatedProduct = repository.save(product);
+        return mapper.toDto(updatedProduct);
     }
 
     @CacheEvict(value = "products", allEntries = true)
     @Override
     public void delete(Long id) {
-        repository.findById(id)
-                .map(p -> {
-                    if (p.getItems().isEmpty()) {
-                        repository.deleteById(id);
-                    } else {
-                        p.setInactive(true);
-                        repository.save(p);
-                    }
-                    return p;
-                })
+        var product = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
+
+        if (product.getItems().isEmpty()) {
+            repository.deleteById(id);
+        } else {
+            product.setInactive(true);
+            repository.save(product);
+        }
     }
 }

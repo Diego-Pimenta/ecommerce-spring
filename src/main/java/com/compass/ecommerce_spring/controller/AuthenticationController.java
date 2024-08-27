@@ -15,7 +15,7 @@ public interface AuthenticationController {
 
     @Operation(summary = "Authenticate an user",
             description = "Generates a jwt token with permissions to the user",
-            tags = {"Authentication", "Post"},
+            tags = "Post",
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully authenticated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponseDto.class))),

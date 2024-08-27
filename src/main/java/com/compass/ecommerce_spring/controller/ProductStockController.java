@@ -2,6 +2,7 @@ package com.compass.ecommerce_spring.controller;
 
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ public interface ProductStockController {
     @Operation(summary = "Create a new product in stock",
             description = "Save a product object with body content",
             security = @SecurityRequirement(name = "security"),
-            tags = {"Products", "Post"},
+            tags = "Post",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Product successfully created in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
@@ -33,7 +34,7 @@ public interface ProductStockController {
     @Operation(summary = "Retrieve a product in stock by id",
             description = "Get a product object by specifying its id",
             security = @SecurityRequirement(name = "security"),
-            tags = {"Products", "Get"},
+            tags = "Get",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product successfully retrieved from stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
@@ -47,7 +48,7 @@ public interface ProductStockController {
     @Operation(summary = "Retrieve all products in stocks",
             description = "Get all product objects",
             security = @SecurityRequirement(name = "security"),
-            tags = {"Products", "Get"},
+            tags = "Get",
             responses = {
                     @ApiResponse(responseCode = "200", description = "All products successfully retrieved from stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
@@ -59,7 +60,7 @@ public interface ProductStockController {
     @Operation(summary = "Update a product in stock by id",
             description = "Modify a product object with body content by its id",
             security = @SecurityRequirement(name = "security"),
-            tags = {"Products", "Put"},
+            tags = "Put",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product successfully updated in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
@@ -72,10 +73,26 @@ public interface ProductStockController {
             })
     ResponseEntity<ProductStockResponseDto> update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
 
+    @Operation(summary = "Update a product status in stock by id",
+            description = "Modify a product object with body content by its id",
+            security = @SecurityRequirement(name = "security"),
+            tags = "Patch",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Product successfully updated in stock",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid product data",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "403", description = "Access denied",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "404", description = "Product not found in stock",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
+            })
+    ResponseEntity<ProductStockResponseDto> updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
+
     @Operation(summary = "Delete a product in stock by id",
             description = "Remove a product object by specifying its id",
             security = @SecurityRequirement(name = "security"),
-            tags = {"Products", "Delete"},
+            tags = "Delete",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Product successfully deleted from stock",
                             content = @Content(schema = @Schema())),

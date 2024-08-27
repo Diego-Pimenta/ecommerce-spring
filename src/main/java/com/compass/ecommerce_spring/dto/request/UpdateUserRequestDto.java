@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,6 +14,7 @@ public record UpdateUserRequestDto(
         String password,
         @NotBlank(message = "Invalid phone number: Phone number must not be blank")
         @Pattern(regexp = "([(]?\\d{2}[)]?)\\d{5}-?\\d{4}", message = "Invalid phone number")
+        @JsonProperty("phone_number")
         String phoneNumber,
         @NotBlank(message = "Invalid address: Address must not be blank")
         @Size(max = 100, message = "Invalid address: Address must not be longer than 100 characters")

@@ -3,6 +3,7 @@ package com.compass.ecommerce_spring.controller.impl;
 import com.compass.ecommerce_spring.controller.ProductStockController;
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,8 +53,20 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> update(@PathVariable Long id, @RequestBody @Valid UpdateProductStockRequestDto updateProductStockRequestDto) {
+    public ResponseEntity<ProductStockResponseDto> update(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateProductStockRequestDto updateProductStockRequestDto
+    ) {
         return ResponseEntity.ok(service.update(id, updateProductStockRequestDto));
+    }
+
+    @PatchMapping("/status/{id}")
+    @Override
+    public ResponseEntity<ProductStockResponseDto> updateStatus(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto
+    ) {
+        return ResponseEntity.ok(service.updateStatus(id, updateProductStockStatusRequestDto));
     }
 
     @DeleteMapping("/{id}")

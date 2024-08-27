@@ -16,15 +16,15 @@ public interface UserService {
 
     UserResponseDto save(CreateUserRequestDto createUserRequestDto);
 
-    UserResponseDto findById(Long id);
+    UserResponseDto findByCpf(String cpf);
 
     List<UserResponseDto> findAll();
 
-    UserResponseDto update(Long id, UpdateUserRequestDto updateUserRequestDto);
+    UserResponseDto update(String cpf, UpdateUserRequestDto updateUserRequestDto);
 
-    UserResponseDto updatePassword(Long id, UpdateUserPasswordRequestDto updateUserPasswordRequestDto);
+    UserResponseDto updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto);
 
-    UserResponseDto updateRole(Long id, UpdateUserRoleRequestDto updateUserRoleRequestDto);
+    UserResponseDto updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto);
 
-    void delete(Long id);
+    void delete(String cpf);
 }
