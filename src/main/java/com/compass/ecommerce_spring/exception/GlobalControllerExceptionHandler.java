@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.exception;
 
+import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,66 +28,56 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
         List<String> errors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.toList());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardError> handleBusinessException(BusinessException ex, WebRequest request) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
         List<String> errors = Collections.singletonList(ex.getMessage());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
     @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
         List<String> errors = Collections.singletonList(ex.getMessage());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.FORBIDDEN, errors, request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardError> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
         List<String> errors = Collections.singletonList(ex.getMessage());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.UNAUTHORIZED, errors, request);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<StandardError> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.CONFLICT;
         List<String> errors = Collections.singletonList(ex.getMessage());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.CONFLICT, errors, request);
     }
 
     @ExceptionHandler({ResourceNotFoundException.class, UsernameNotFoundException.class})
     public ResponseEntity<StandardError> handleResourceNotFoundException(Exception ex, WebRequest request) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
         List<String> errors = Collections.singletonList(ex.getMessage());
-        String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
-        return ResponseEntity.status(status).body(standardError);
+        return processResponseEntity(HttpStatus.NOT_FOUND, errors, request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ex.printStackTrace();
         List<String> errors = Collections.singletonList(ex.getMessage());
+        return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
+    }
+
+    private ResponseEntity<StandardError> processResponseEntity(HttpStatus status, List<String> errors, WebRequest request) {
         String path = request.getDescription(false).replace("uri=", "");
         StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
         return ResponseEntity.status(status).body(standardError);
