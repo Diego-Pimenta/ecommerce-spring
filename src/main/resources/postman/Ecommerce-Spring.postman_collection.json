@@ -12,6 +12,9 @@
 				{
 					"name": "Create-User",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -220,7 +223,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Novo nome\",\n    \"quantity\": \"50\",\n    \"unit_price\": \"99.99\",\n    \"category\": \"Atualizado recentemente\",\n    \"inactive_status\": \"false\"\n}",
+							"raw": "{\n    \"name\": \"Novo nome\",\n    \"quantity\": \"50\",\n    \"unit_price\": \"99.99\",\n    \"category\": \"Atualizado recentemente\",\n    \"active\": \"true\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -253,7 +256,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"inactive_status\": \"false\"\n}",
+							"raw": "{\n    \"active\": \"true\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -440,13 +443,49 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-gateway}}/v1/users/12345678902",
+							"raw": "{{api-gateway}}/v1/users/role/12345678902",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"users",
+								"role",
+								"12345678902"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update-User-Status-By-Cpf",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"active\": \"true\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/users/status/12345678902",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"status",
 								"12345678902"
 							]
 						}

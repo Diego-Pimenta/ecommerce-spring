@@ -4,6 +4,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,8 @@ public interface UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid user data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict with existing data",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<UserResponseDto> save(CreateUserRequestDto createUserRequestDto);
 
@@ -36,7 +39,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully retrieved",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "User not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
@@ -50,7 +53,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "All users successfully retrieved",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<List<UserResponseDto>> findAll();
@@ -64,9 +67,11 @@ public interface UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid user data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "User not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<UserResponseDto> update(String cpf, UpdateUserRequestDto updateUserRequestDto);
@@ -95,12 +100,28 @@ public interface UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid user data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "User not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<UserResponseDto> updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto);
+
+    @Operation(summary = "Update an user status by cpf",
+            description = "Modify an user object with body content by its cpf",
+            security = @SecurityRequirement(name = "security"),
+            tags = "Patch",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User successfully updated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "401", description = "Access denied",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "404", description = "User not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
+            })
+    ResponseEntity<UserResponseDto> updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto);
 
     @Operation(summary = "Delete an user by cpf",
             description = "Remove an user object by specifying its cpf",
@@ -109,7 +130,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "User successfully deleted",
                             content = @Content(schema = @Schema())),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "User not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))

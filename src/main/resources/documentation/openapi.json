@@ -1,0 +1,1297 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Demo Ecommerce API",
+    "description": "API documentation for managing products, sales and users",
+    "contact": {
+      "name": "Diego Pimenta",
+      "url": "https://github.com/Diego-Pimenta",
+      "email": "diegopimenta888@gmail.com"
+    },
+    "license": {
+      "name": "Apache License",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "v1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "Contains operations related with the user"
+    },
+    {
+      "name": "Authentication",
+      "description": "Operation of authentication for the user"
+    },
+    {
+      "name": "Product Stock",
+      "description": "Contains operations related with the product stock"
+    }
+  ],
+  "paths": {
+    "/v1/users/{cpf}": {
+      "get": {
+        "tags": [
+          "User",
+          "Get"
+        ],
+        "summary": "Retrieve an user by cpf",
+        "description": "Get an user object by specifying its cpf",
+        "operationId": "findByCpf",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User",
+          "Put"
+        ],
+        "summary": "Update an user by cpf",
+        "description": "Modify an user object with body content by its cpf",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict with existing data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Delete",
+          "User"
+        ],
+        "summary": "Delete an user by cpf",
+        "description": "Remove an user object by specifying its cpf",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully deleted"
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/products/{id}": {
+      "get": {
+        "tags": [
+          "Get",
+          "Product Stock"
+        ],
+        "summary": "Retrieve a product in stock by id",
+        "description": "Get a product object by specifying its id",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product successfully retrieved from stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStockResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Product Stock",
+          "Put"
+        ],
+        "summary": "Update a product in stock by id",
+        "description": "Modify a product object with body content by its id",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductStockRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Product successfully updated in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStockResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict with existing data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Delete",
+          "Product Stock"
+        ],
+        "summary": "Delete a product in stock by id",
+        "description": "Remove a product object by specifying its id",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product successfully deleted from stock"
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "tags": [
+          "User",
+          "Get"
+        ],
+        "summary": "Retrieve all users",
+        "description": "Get all user objects",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "All users successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User",
+          "Post"
+        ],
+        "summary": "Create a new user",
+        "description": "Save an user object with body content",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict with existing data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products": {
+      "get": {
+        "tags": [
+          "Get",
+          "Product Stock"
+        ],
+        "summary": "Retrieve all products in stocks",
+        "description": "Get all product objects",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "All products successfully retrieved from stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStockResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Post",
+          "Product Stock"
+        ],
+        "summary": "Create a new product in stock",
+        "description": "Save a product object with body content",
+        "operationId": "save_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductStockRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Product successfully created in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStockResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict with existing data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Post",
+          "Authentication"
+        ],
+        "summary": "Authenticate an user",
+        "description": "Generates a jwt token with permissions to the user",
+        "operationId": "authentication",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User credentials don't match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/status/{cpf}": {
+      "patch": {
+        "tags": [
+          "User",
+          "Patch"
+        ],
+        "summary": "Update an user status by cpf",
+        "description": "Modify an user object with body content by its cpf",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserStatusRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/users/role/{cpf}": {
+      "patch": {
+        "tags": [
+          "User",
+          "Patch"
+        ],
+        "summary": "Update an user role by cpf",
+        "description": "Modify an user object with body content by its cpf",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/users/change-password/{cpf}": {
+      "patch": {
+        "tags": [
+          "User",
+          "Patch"
+        ],
+        "summary": "Update an user password by cpf",
+        "description": "Modify an user object with body content by its cpf",
+        "operationId": "updatePassword",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPasswordRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User credentials don't match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products/status/{id}": {
+      "patch": {
+        "tags": [
+          "Patch",
+          "Product Stock"
+        ],
+        "summary": "Update a product status in stock by id",
+        "description": "Modify a product object with body content by its id",
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductStockStatusRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Product successfully updated in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStockResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "CLIENT",
+              "ADMIN"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "phone_number": {
+            "type": "string"
+          }
+        }
+      },
+      "StandardError": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateUserRequestDto": {
+        "required": [
+          "address",
+          "password",
+          "phone_number"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          },
+          "address": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "phone_number": {
+            "pattern": "([(]?\\d{2}[)]?)\\d{5}-?\\d{4}",
+            "type": "string"
+          }
+        }
+      },
+      "ProductStockResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "unit_price": {
+            "type": "number"
+          }
+        }
+      },
+      "UpdateProductStockRequestDto": {
+        "required": [
+          "active",
+          "category",
+          "name",
+          "quantity",
+          "unit_price"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "unit_price": {
+            "minimum": 0,
+            "type": "number"
+          }
+        }
+      },
+      "CreateUserRequestDto": {
+        "required": [
+          "address",
+          "cpf",
+          "name",
+          "password",
+          "phone_number"
+        ],
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "maxLength": 11,
+            "minLength": 11,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          },
+          "address": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "phone_number": {
+            "pattern": "([(]?\\d{2}[)]?)\\d{5}-?\\d{4}",
+            "type": "string"
+          }
+        }
+      },
+      "CreateProductStockRequestDto": {
+        "required": [
+          "category",
+          "name",
+          "quantity",
+          "unit_price"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "unit_price": {
+            "minimum": 0,
+            "type": "number"
+          }
+        }
+      },
+      "AuthenticationResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "expiration": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AuthenticationRequestDto": {
+        "required": [
+          "cpf",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "maxLength": 11,
+            "minLength": 11,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          }
+        }
+      },
+      "UpdateUserStatusRequestDto": {
+        "required": [
+          "active"
+        ],
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateUserRoleRequestDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "CLIENT",
+              "ADMIN"
+            ]
+          }
+        }
+      },
+      "UpdateUserPasswordRequestDto": {
+        "required": [
+          "new_password",
+          "old_password"
+        ],
+        "type": "object",
+        "properties": {
+          "old_password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          },
+          "new_password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          }
+        }
+      },
+      "UpdateProductStockStatusRequestDto": {
+        "required": [
+          "active"
+        ],
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "security": {
+        "type": "http",
+        "description": "Authentication required with bearer token",
+        "name": "security",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

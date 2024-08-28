@@ -74,6 +74,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
         List<String> errors = Collections.singletonList(ex.getMessage());
+        ex.printStackTrace();
         return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
     }
 

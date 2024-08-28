@@ -26,7 +26,9 @@ public interface ProductStockController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid product data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<ProductStockResponseDto> save(CreateProductStockRequestDto createProductStockRequestDto);
@@ -38,7 +40,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product successfully retrieved from stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
@@ -52,7 +54,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "All products successfully retrieved from stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<List<ProductStockResponseDto>> findAll();
@@ -66,9 +68,11 @@ public interface ProductStockController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid product data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<ProductStockResponseDto> update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
@@ -82,7 +86,7 @@ public interface ProductStockController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid product data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
@@ -96,7 +100,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "Product successfully deleted from stock",
                             content = @Content(schema = @Schema())),
-                    @ApiResponse(responseCode = "403", description = "Access denied",
+                    @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))

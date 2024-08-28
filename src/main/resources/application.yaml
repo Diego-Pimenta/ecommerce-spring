@@ -20,6 +20,8 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+  api-docs:
+    path: /docs-json
 
 security:
   jwt:
