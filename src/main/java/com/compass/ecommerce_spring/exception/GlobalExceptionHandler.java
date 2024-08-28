@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -17,14 +18,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.nio.file.AccessDeniedException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalControllerExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
@@ -74,13 +74,12 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
         List<String> errors = Collections.singletonList(ex.getMessage());
-        ex.printStackTrace();
         return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
     }
 
     private ResponseEntity<StandardError> processResponseEntity(HttpStatus status, List<String> errors, WebRequest request) {
         String path = request.getDescription(false).replace("uri=", "");
-        StandardError standardError = new StandardError(Instant.now(), status.value(), errors, path);
+        StandardError standardError = new StandardError(LocalDateTime.now(), status.value(), errors, path);
         return ResponseEntity.status(status).body(standardError);
     }
 }

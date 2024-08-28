@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.config;
 
+import com.compass.ecommerce_spring.security.JwtAuthEntryPoint;
 import com.compass.ecommerce_spring.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.nio.file.AccessDeniedException;
-
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -26,11 +25,13 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
+            "/docs-json/**",
             "/h2-console/**",
             "/v1/auth/login",
             "/v1/users/change-password/**"
     };
 
+    private final JwtAuthEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -43,15 +44,14 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // interface do h2 depende disso
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            throw new AccessDeniedException(authException.getMessage());
-                        }))
+                        .authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
