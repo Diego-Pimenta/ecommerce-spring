@@ -38,8 +38,11 @@ public class User {
     private String phoneNumber;
     @Column(nullable = false, length = 100)
     private String address;
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.CLIENT; // para ser ADMIN um user admin deve dar permissão
+    @Column(nullable = false)
+    private Boolean active = true;
     @OneToMany(mappedBy = "customer")
     private List<Sale> sales = new ArrayList<>();
 }
