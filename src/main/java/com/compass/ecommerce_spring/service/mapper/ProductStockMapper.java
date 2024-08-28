@@ -6,15 +6,26 @@ import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestD
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.entity.ProductStock;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductStockMapper {
 
     ProductStock createProductStockToEntity(CreateProductStockRequestDto createProductStockRequestDto);
 
-    ProductStock updateProductStockToEntity(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
+    @Mappings({
+            @Mapping(target = "name", expression = "java(updateProductStockRequestDto.name())"),
+            @Mapping(target = "quantity", expression = "java(updateProductStockRequestDto.quantity())"),
+            @Mapping(target = "unitPrice", expression = "java(updateProductStockRequestDto.unitPrice())"),
+            @Mapping(target = "category", expression = "java(updateProductStockRequestDto.category())"),
+            @Mapping(target = "active", expression = "java(updateProductStockRequestDto.active())"),
+    })
+    ProductStock updateProductStockToEntity(ProductStock productStock, UpdateProductStockRequestDto updateProductStockRequestDto);
 
-    ProductStock updateProductStockStatusToEntity(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
+    @Mapping(target = "active", expression = "java(updateProductStockStatusRequestDto.active())")
+    ProductStock updateProductStockStatusToEntity(ProductStock productStock, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
 
     ProductStockResponseDto toDto(ProductStock productStock);
 }

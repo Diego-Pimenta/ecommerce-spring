@@ -10,6 +10,7 @@ import com.compass.ecommerce_spring.repository.ProductStockRepository;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import com.compass.ecommerce_spring.service.mapper.ProductStockMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -30,10 +32,9 @@ public class ProductStockServiceImpl implements ProductStockService {
     @CacheEvict(value = "products", allEntries = true)
     @Override
     public ProductStockResponseDto save(CreateProductStockRequestDto createProductStockRequestDto) {
-        repository.findByName(createProductStockRequestDto.name())
-                .ifPresent(p -> {
-                    throw new ResourceAlreadyExistsException("A product with this name already exists");
-                });
+        if (repository.existsByName(createProductStockRequestDto.name())) {
+            throw new ResourceAlreadyExistsException("A product with this name already exists");
+        }
 
         var productStock = mapper.createProductStockToEntity(createProductStockRequestDto);
         var createdProductStock = repository.save(productStock);
@@ -61,16 +62,16 @@ public class ProductStockServiceImpl implements ProductStockService {
     @CachePut(value = "products", key = "#id")
     @Override
     public ProductStockResponseDto update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto) {
-        repository.findById(id)
+        var existingProduct = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
 
-        repository.findByName(updateProductStockRequestDto.name())
-                .filter(p -> !p.getId().equals(id))
-                .ifPresent(p -> {
-                    throw new ResourceAlreadyExistsException("A product with this name already exists");
-                });
+        var existingProductByName = repository.findByName(updateProductStockRequestDto.name());
 
-        var productStock = mapper.updateProductStockToEntity(id, updateProductStockRequestDto);
+        if (existingProductByName.isPresent() && !existingProductByName.get().getId().equals(id)) {
+            throw new ResourceAlreadyExistsException("A product with this name already exists");
+        }
+
+        var productStock = mapper.updateProductStockToEntity(existingProduct, updateProductStockRequestDto);
         var updatedProductStock = repository.save(productStock);
         return mapper.toDto(updatedProductStock);
     }
@@ -78,12 +79,11 @@ public class ProductStockServiceImpl implements ProductStockService {
     @CachePut(value = "products", key = "#id")
     @Override
     public ProductStockResponseDto updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto) {
-        // TODO: fix DataIntegrityViolation (Columns receiving null values)
-        repository.findById(id)
+        var existingProduct = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
 
-        var product = mapper.updateProductStockStatusToEntity(id, updateProductStockStatusRequestDto);
-        product.setInactive(updateProductStockStatusRequestDto.inactive());
+        var product = mapper.updateProductStockStatusToEntity(existingProduct, updateProductStockStatusRequestDto);
+        product.setActive(updateProductStockStatusRequestDto.active());
         var updatedProduct = repository.save(product);
         return mapper.toDto(updatedProduct);
     }
@@ -97,7 +97,7 @@ public class ProductStockServiceImpl implements ProductStockService {
         if (product.getItems().isEmpty()) {
             repository.deleteById(id);
         } else {
-            product.setInactive(true);
+            product.setActive(false);
             repository.save(product);
         }
     }

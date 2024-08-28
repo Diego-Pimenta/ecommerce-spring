@@ -7,8 +7,10 @@ import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestD
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -25,6 +27,8 @@ public interface UserService {
     UserResponseDto updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto);
 
     UserResponseDto updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto);
+
+    UserResponseDto updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto);
 
     void delete(String cpf);
 }

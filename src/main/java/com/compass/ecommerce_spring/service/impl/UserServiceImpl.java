@@ -4,14 +4,19 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.UserRepository;
 import com.compass.ecommerce_spring.service.UserService;
 import com.compass.ecommerce_spring.service.mapper.UserMapper;
+import com.compass.ecommerce_spring.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +32,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final JwtUtil jwtUtil;
 
     @Override
     public UserResponseDto save(CreateUserRequestDto createUserRequestDto) {
-        // TODO: fix DataIntegrityViolation (existing email not handled)
-        repository.findByCpf(createUserRequestDto.cpf())
-                .ifPresent(p -> {
-                    throw new ResourceAlreadyExistsException("An user with this cpf already exists");
-                });
+        if (repository.existsByCpf(createUserRequestDto.cpf())) {
+            throw new ResourceAlreadyExistsException("An user with this cpf already exists");
+        }
+
+        if (repository.existsByEmail(createUserRequestDto.email())) {
+            throw new ResourceAlreadyExistsException("An user with this email already exists");
+        }
 
         var user = mapper.createUserToEntity(createUserRequestDto);
         user.setPassword(passwordEncoder.encode(createUserRequestDto.password()));
@@ -61,11 +69,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto update(String cpf, UpdateUserRequestDto updateUserRequestDto) {
-        // TODO: fix DataIntegrityViolation (Columns receiving null values)
-        repository.findByCpf(cpf)
+        var existingUser = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        var user = mapper.updateUserToEntity(cpf, updateUserRequestDto);
+        var existingUserByEmail = repository.findByEmail(updateUserRequestDto.email());
+
+        if (existingUserByEmail.isPresent() && !existingUserByEmail.get().getCpf().equals(cpf)) {
+            throw new ResourceAlreadyExistsException("An user with this email already exists");
+        }
+
+        var user = mapper.updateUserToEntity(existingUser, updateUserRequestDto);
         user.setPassword(passwordEncoder.encode(updateUserRequestDto.password()));
         var updatedUser = repository.save(user);
         return mapper.toDto(updatedUser);
@@ -96,10 +109,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String cpf) {
-        repository.findByCpf(cpf)
+    public UserResponseDto updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto) {
+        var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        repository.deleteById(cpf);
+        user.setActive(updateUserStatusRequestDto.active());
+        var updateUser = repository.save(user);
+        return mapper.toDto(updateUser);
+    }
+
+    @Override
+    public void delete(String cpf) {
+        var user = repository.findByCpf(cpf)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        var userCpf = userDetails.getUsername();
+
+        if (cpf.equals(userCpf)) {
+            throw new AccessDeniedException("You cannot delete your own account");
+        }
+
+        user.setActive(false);
+        repository.save(user);
     }
 }

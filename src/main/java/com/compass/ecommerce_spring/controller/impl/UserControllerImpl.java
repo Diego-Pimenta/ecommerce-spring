@@ -5,6 +5,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.service.UserService;
 import jakarta.validation.Valid;
@@ -77,6 +78,15 @@ public class UserControllerImpl implements UserController {
             @RequestBody @Valid UpdateUserRoleRequestDto updateUserRoleRequestDto
     ) {
         return ResponseEntity.ok(service.updateRole(cpf, updateUserRoleRequestDto));
+    }
+
+    @PatchMapping("/status/{cpf}")
+    @Override
+    public ResponseEntity<UserResponseDto> updateStatus(
+            @PathVariable String cpf,
+            @RequestBody @Valid UpdateUserStatusRequestDto updateUserStatusRequestDto
+    ) {
+        return ResponseEntity.ok(service.updateStatus(cpf, updateUserStatusRequestDto));
     }
 
     @DeleteMapping("/{cpf}")
