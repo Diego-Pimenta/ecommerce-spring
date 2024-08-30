@@ -7,9 +7,9 @@ INSERT INTO tb_product_stock (name, quantity, unit_price, category, active) VALU
 ('T-Shirt', 20, 19.99, 'Clothing', TRUE),
 ('Chair', 10, 39.99, 'Furniture', TRUE);
 
-INSERT INTO tb_sale (instant, customer_cpf, status) VALUES
-('2024-07-28 10:30:00', '12345678902', 'COMPLETED'),
-('2024-08-22 11:30:00', '12345678902', 'PENDING');
+INSERT INTO tb_sale (moment, customer_cpf, status) VALUES
+('2024-07-28 10:30:00', '12345678902', 'DONE'),
+('2024-08-22 11:30:00', '12345678902', 'SHIPPED');
 
 INSERT INTO tb_sale_item (sale_id, product_id, quantity, price, discount) VALUES
 (1, 1, 1, 299.99, 0.00),

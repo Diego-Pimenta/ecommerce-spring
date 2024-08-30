@@ -12,6 +12,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
+    @Mapping(target = "role", expression = "java(Role.CLIENT)")
+    @Mapping(target = "active", constant = "true")
     User createUserToEntity(CreateUserRequestDto createUserRequestDto);
 
     @Mappings({

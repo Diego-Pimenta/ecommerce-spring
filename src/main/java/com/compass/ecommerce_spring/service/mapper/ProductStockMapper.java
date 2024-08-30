@@ -2,7 +2,6 @@ package com.compass.ecommerce_spring.service.mapper;
 
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.entity.ProductStock;
 import org.mapstruct.Mapper;
@@ -13,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductStockMapper {
 
+    @Mapping(target = "active", constant = "true")
     ProductStock createProductStockToEntity(CreateProductStockRequestDto createProductStockRequestDto);
 
     @Mappings({
@@ -23,9 +23,6 @@ public interface ProductStockMapper {
             @Mapping(target = "active", expression = "java(updateProductStockRequestDto.active())"),
     })
     ProductStock updateProductStockToEntity(ProductStock productStock, UpdateProductStockRequestDto updateProductStockRequestDto);
-
-    @Mapping(target = "active", expression = "java(updateProductStockStatusRequestDto.active())")
-    ProductStock updateProductStockStatusToEntity(ProductStock productStock, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
 
     ProductStockResponseDto toDto(ProductStock productStock);
 }

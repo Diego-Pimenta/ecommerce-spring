@@ -2,9 +2,9 @@ package com.compass.ecommerce_spring.entity.enums;
 
 public enum SaleStatus {
 
-    COMPLETED,
-    PENDING,
+    WAITING_PAYMENT,
     PAID,
-    DENIED,
-    CANCELED
+    SHIPPED,
+    DONE,
+    CANCELLED
 }

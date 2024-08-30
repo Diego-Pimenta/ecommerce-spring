@@ -1,10 +1,10 @@
 package com.compass.ecommerce_spring.dto.request;
 
 import com.compass.ecommerce_spring.entity.enums.Role;
-import com.compass.ecommerce_spring.validation.ValidUserRole;
+import jakarta.validation.constraints.NotNull;
 
 public record UpdateUserRoleRequestDto(
-        @ValidUserRole
+        @NotNull(message = "Invalid role: Role must be CLIENT or ADMIN")
         Role role
 ) {
 }

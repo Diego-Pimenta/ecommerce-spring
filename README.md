@@ -4,9 +4,9 @@
 
 [X] Um produto não pode ser DELETADO após ser incluso em uma venda, porém deve ter alguma maneira de INATIVAR ele. PESO (2)
 
-[] Controlar o estoque do produto de forma que ele não possa ser vendido caso o estoque seja menor do que a quantidade necessária para a venda ou igual a zero. PESO (3)
+[X] Controlar o estoque do produto de forma que ele não possa ser vendido caso o estoque seja menor do que a quantidade necessária para a venda ou igual a zero. PESO (3)
 
-[] Permitir que os usuários criem, leiam, atualizem e excluam vendas (Uma venda tem que ter no mínimo 1 produto para ser concluída). PESO (3)
+[X] Permitir que os usuários criem, leiam, atualizem e excluam vendas (Uma venda tem que ter no mínimo 1 produto para ser concluída). PESO (3)
 
 [] Criar métodos de relatório de vendas por data (informada pelo cliente), por mês e pela semana atual (considerar dias úteis). PESO (1)
 
@@ -14,7 +14,7 @@
 
 [X] Todas as EXCEÇÕES devem ser tratadas e seguir o mesmo padrão de resposta. PESO (1)
 
-[] Todos os campos data, devem seguir o padrão ISO 8601 (exemplo: 2023-07-20T12:00:00Z). PESO (1)
+[X] Todos os campos data, devem seguir o padrão ISO 8601 (exemplo: 2023-07-20T12:00:00Z). PESO (1)
 
 [X] Implementar Autenticação via Token JWT. PESO (3)
 

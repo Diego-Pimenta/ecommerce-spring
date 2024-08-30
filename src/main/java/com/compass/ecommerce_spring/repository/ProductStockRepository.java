@@ -10,4 +10,6 @@ public interface ProductStockRepository extends JpaRepository<ProductStock, Long
     Optional<ProductStock> findByName(String name);
 
     Boolean existsByName(String name);
+
+    Optional<ProductStock> findByIdAndActive(Long id, Boolean active);
 }

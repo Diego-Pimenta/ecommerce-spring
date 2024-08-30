@@ -23,9 +23,9 @@ public class SaleItem {
     private SaleItemPk id = new SaleItemPk();
     @Column(nullable = false)
     private Integer quantity;
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 8, scale = 2)
     private BigDecimal price;
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(nullable = false, precision = 3, scale = 2)
     private BigDecimal discount;
 
     public SaleItem(Sale sale, ProductStock product, Integer quantity, BigDecimal price, BigDecimal discount) {

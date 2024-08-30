@@ -10,7 +10,6 @@ import com.compass.ecommerce_spring.repository.ProductStockRepository;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import com.compass.ecommerce_spring.service.mapper.ProductStockMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -41,6 +39,7 @@ public class ProductStockServiceImpl implements ProductStockService {
         return mapper.toDto(createdProductStock);
     }
 
+    @Cacheable(value = "products", key = "#id")
     @Transactional(readOnly = true)
     @Override
     public ProductStockResponseDto findById(Long id) {
@@ -79,10 +78,9 @@ public class ProductStockServiceImpl implements ProductStockService {
     @CachePut(value = "products", key = "#id")
     @Override
     public ProductStockResponseDto updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto) {
-        var existingProduct = repository.findById(id)
+        var product = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
 
-        var product = mapper.updateProductStockStatusToEntity(existingProduct, updateProductStockStatusRequestDto);
         product.setActive(updateProductStockStatusRequestDto.active());
         var updatedProduct = repository.save(product);
         return mapper.toDto(updatedProduct);

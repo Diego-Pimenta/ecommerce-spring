@@ -11,7 +11,6 @@ import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.UserRepository;
 import com.compass.ecommerce_spring.service.UserService;
 import com.compass.ecommerce_spring.service.mapper.UserMapper;
-import com.compass.ecommerce_spring.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,7 +31,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
-    private final JwtUtil jwtUtil;
 
     @Override
     public UserResponseDto save(CreateUserRequestDto createUserRequestDto) {

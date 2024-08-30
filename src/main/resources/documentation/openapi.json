@@ -26,6 +26,10 @@
       "description": "Contains operations related with the user"
     },
     {
+      "name": "Sale",
+      "description": "Contains operations related with the sale"
+    },
+    {
       "name": "Authentication",
       "description": "Operation of authentication for the user"
     },
@@ -228,6 +232,192 @@
         ]
       }
     },
+    "/v1/sales/{id}": {
+      "get": {
+        "tags": [
+          "Sale",
+          "Get"
+        ],
+        "summary": "Retrieve a sale by id",
+        "description": "Get a sale object by specifying its id",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sale successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Sale",
+          "Put"
+        ],
+        "summary": "Update a sale by id",
+        "description": "Modify a sale object with body content by its id",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSaleRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sale successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sale data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale data not achievable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Delete",
+          "Sale"
+        ],
+        "summary": "Delete a sale by id",
+        "description": "Remove a sale object by specifying its id",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sale successfully deleted"
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
     "/v1/products/{id}": {
       "get": {
         "tags": [
@@ -236,7 +426,7 @@
         ],
         "summary": "Retrieve a product in stock by id",
         "description": "Get a product object by specifying its id",
-        "operationId": "findById",
+        "operationId": "findById_1",
         "parameters": [
           {
             "name": "id",
@@ -293,7 +483,7 @@
         ],
         "summary": "Update a product in stock by id",
         "description": "Modify a product object with body content by its id",
-        "operationId": "update_1",
+        "operationId": "update_2",
         "parameters": [
           {
             "name": "id",
@@ -380,7 +570,7 @@
         ],
         "summary": "Delete a product in stock by id",
         "description": "Remove a product object by specifying its id",
-        "operationId": "delete_1",
+        "operationId": "delete_2",
         "parameters": [
           {
             "name": "id",
@@ -513,6 +703,110 @@
         }
       }
     },
+    "/v1/sales": {
+      "get": {
+        "tags": [
+          "Sale",
+          "Get"
+        ],
+        "summary": "Retrieve all sales",
+        "description": "Get all sale objects",
+        "operationId": "findAll_1",
+        "responses": {
+          "200": {
+            "description": "All sales successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Sale",
+          "Post"
+        ],
+        "summary": "Create a new sale",
+        "description": "Save a sale object with body content",
+        "operationId": "save_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSaleRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Sale successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sale data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale data not achievable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
     "/v1/products": {
       "get": {
         "tags": [
@@ -521,7 +815,7 @@
         ],
         "summary": "Retrieve all products in stocks",
         "description": "Get all product objects",
-        "operationId": "findAll_1",
+        "operationId": "findAll_2",
         "responses": {
           "200": {
             "description": "All products successfully retrieved from stock",
@@ -557,7 +851,7 @@
         ],
         "summary": "Create a new product in stock",
         "description": "Save a product object with body content",
-        "operationId": "save_1",
+        "operationId": "save_2",
         "requestBody": {
           "content": {
             "application/json": {
@@ -909,6 +1203,85 @@
         }
       }
     },
+    "/v1/sales/status/{id}": {
+      "patch": {
+        "tags": [
+          "Sale",
+          "Patch"
+        ],
+        "summary": "Update a sale status by id",
+        "description": "Modify a sale object with body content by its id",
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSaleStatusRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sale successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sale data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale data not achievable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
     "/v1/products/status/{id}": {
       "patch": {
         "tags": [
@@ -917,7 +1290,7 @@
         ],
         "summary": "Update a product status in stock by id",
         "description": "Modify a product object with body content by its id",
-        "operationId": "updateStatus_1",
+        "operationId": "updateStatus_2",
         "parameters": [
           {
             "name": "id",
@@ -1095,6 +1468,96 @@
           }
         }
       },
+      "SaleItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/ProductStockResponseDto"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "sub_total": {
+            "type": "number"
+          }
+        }
+      },
+      "SaleResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "moment": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "WAITING_PAYMENT",
+              "PAID",
+              "SHIPPED",
+              "DONE",
+              "CANCELLED"
+            ]
+          },
+          "customer": {
+            "$ref": "#/components/schemas/UserResponseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleItemResponseDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
+      "SaleItemRequestDto": {
+        "required": [
+          "product_id",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "product_id": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UpdateSaleRequestDto": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleItemRequestDto"
+            }
+          }
+        }
+      },
       "UpdateProductStockRequestDto": {
         "required": [
           "active",
@@ -1164,6 +1627,27 @@
           },
           "phone_number": {
             "pattern": "([(]?\\d{2}[)]?)\\d{5}-?\\d{4}",
+            "type": "string"
+          }
+        }
+      },
+      "CreateSaleRequestDto": {
+        "required": [
+          "customer_cpf",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleItemRequestDto"
+            }
+          },
+          "customer_cpf": {
+            "maxLength": 11,
+            "minLength": 11,
             "type": "string"
           }
         }
@@ -1241,6 +1725,9 @@
         }
       },
       "UpdateUserRoleRequestDto": {
+        "required": [
+          "role"
+        ],
         "type": "object",
         "properties": {
           "role": {
@@ -1268,6 +1755,24 @@
             "maxLength": 20,
             "minLength": 8,
             "type": "string"
+          }
+        }
+      },
+      "UpdateSaleStatusRequestDto": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "WAITING_PAYMENT",
+              "PAID",
+              "SHIPPED",
+              "DONE",
+              "CANCELLED"
+            ]
           }
         }
       },

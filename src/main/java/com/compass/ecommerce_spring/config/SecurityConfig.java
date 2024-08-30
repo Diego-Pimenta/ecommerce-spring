@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC).permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

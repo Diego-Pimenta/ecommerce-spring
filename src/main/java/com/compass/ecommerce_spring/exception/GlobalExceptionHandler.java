@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
-        List<String> errors = ex.getBindingResult().getFieldErrors()
+        var errors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.toList());
@@ -37,43 +37,43 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<StandardError> handleBusinessException(BusinessException ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
     @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.FORBIDDEN, errors, request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardError> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.UNAUTHORIZED, errors, request);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<StandardError> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.CONFLICT, errors, request);
     }
 
     @ExceptionHandler({ResourceNotFoundException.class, UsernameNotFoundException.class})
     public ResponseEntity<StandardError> handleResourceNotFoundException(Exception ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.NOT_FOUND, errors, request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
     }
 

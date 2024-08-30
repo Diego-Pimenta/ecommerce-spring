@@ -1,6 +1,7 @@
 package com.compass.ecommerce_spring.entity;
 
 import com.compass.ecommerce_spring.entity.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,9 +41,10 @@ public class User {
     private String address;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Role role = Role.CLIENT; // para ser ADMIN um user admin deve dar permissão
+    private Role role; // para ser ADMIN um user admin deve dar permissão
     @Column(nullable = false)
-    private Boolean active = true;
+    private Boolean active;
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Sale> sales = new ArrayList<>();
 }
