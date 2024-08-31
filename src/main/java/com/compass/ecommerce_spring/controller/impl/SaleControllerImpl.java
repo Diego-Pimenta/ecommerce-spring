@@ -1,8 +1,7 @@
 package com.compass.ecommerce_spring.controller.impl;
 
 import com.compass.ecommerce_spring.controller.SaleController;
-import com.compass.ecommerce_spring.dto.request.CreateSaleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateSaleRequestDto;
+import com.compass.ecommerce_spring.dto.request.SaleRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateSaleStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.SaleResponseDto;
 import com.compass.ecommerce_spring.service.SaleService;
@@ -32,8 +31,8 @@ public class SaleControllerImpl implements SaleController {
 
     @PostMapping
     @Override
-    public ResponseEntity<SaleResponseDto> save(@RequestBody @Valid CreateSaleRequestDto createSaleRequestDto) {
-        SaleResponseDto saleResponseDto = service.save(createSaleRequestDto);
+    public ResponseEntity<SaleResponseDto> save(@RequestBody @Valid SaleRequestDto saleRequestDto) {
+        SaleResponseDto saleResponseDto = service.save(saleRequestDto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(saleResponseDto.id()).toUri();
         return ResponseEntity.created(uri).body(saleResponseDto);
@@ -55,9 +54,9 @@ public class SaleControllerImpl implements SaleController {
     @Override
     public ResponseEntity<SaleResponseDto> update(
             @PathVariable Long id,
-            @RequestBody @Valid UpdateSaleRequestDto updateSaleRequestDto
+            @RequestBody @Valid SaleRequestDto saleRequestDto
     ) {
-        return ResponseEntity.ok(service.update(id, updateSaleRequestDto));
+        return ResponseEntity.ok(service.update(id, saleRequestDto));
     }
 
     @PatchMapping("/status/{id}")

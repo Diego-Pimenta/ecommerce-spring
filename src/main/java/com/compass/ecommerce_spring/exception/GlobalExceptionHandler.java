@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,24 +27,16 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
-        var errors = ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.toList());
-        return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
-    }
+    @ExceptionHandler({MethodArgumentNotValidException.class, BusinessException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<StandardError> handleBadRequestException(Exception ex, WebRequest request) {
+        var errors = new ArrayList<String>();
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<StandardError> handleBusinessException(BusinessException ex, WebRequest request) {
-        var errors = Collections.singletonList(ex.getMessage());
-        return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
-    }
+        if (ex instanceof MethodArgumentNotValidException) {
+            errors.addAll(processMethodArgumentNotValidException((MethodArgumentNotValidException) ex));
+        } else {
+            errors.add(ex.getMessage());
+        }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<StandardError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
-        var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
@@ -74,7 +67,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
         var errors = Collections.singletonList(ex.getMessage());
+        ex.printStackTrace();
         return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
+    }
+
+    private List<String> processMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
     }
 
     private ResponseEntity<StandardError> processResponseEntity(HttpStatus status, List<String> errors, WebRequest request) {

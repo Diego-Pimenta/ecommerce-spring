@@ -24,7 +24,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Product successfully created in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid product data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -66,7 +66,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product successfully updated in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid product data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -84,7 +84,7 @@ public interface ProductStockController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product successfully updated in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductStockResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid product data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),

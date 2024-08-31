@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductStockServiceImpl implements ProductStockService {
 
+//    private static final String PRODUCT_CACHE_KEY = "PRODUCT:";
+
     private final ProductStockRepository repository;
     private final ProductStockMapper mapper;
 

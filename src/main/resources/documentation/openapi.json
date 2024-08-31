@@ -136,7 +136,7 @@
             }
           },
           "400": {
-            "description": "Invalid user data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -313,7 +313,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateSaleRequestDto"
+                "$ref": "#/components/schemas/SaleRequestDto"
               }
             }
           },
@@ -331,7 +331,7 @@
             }
           },
           "400": {
-            "description": "Invalid sale data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -389,6 +389,16 @@
         "responses": {
           "204": {
             "description": "Sale successfully deleted"
+          },
+          "400": {
+            "description": "Invalid operation with data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
           },
           "401": {
             "description": "Access denied",
@@ -517,7 +527,7 @@
             }
           },
           "400": {
-            "description": "Invalid product data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -681,7 +691,7 @@
             }
           },
           "400": {
-            "description": "Invalid user data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -752,7 +762,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateSaleRequestDto"
+                "$ref": "#/components/schemas/SaleRequestDto"
               }
             }
           },
@@ -770,7 +780,7 @@
             }
           },
           "400": {
-            "description": "Invalid sale data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -874,7 +884,7 @@
             }
           },
           "400": {
-            "description": "Invalid product data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1015,7 +1025,7 @@
             }
           },
           "400": {
-            "description": "Invalid user data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1093,7 +1103,7 @@
             }
           },
           "400": {
-            "description": "Invalid user data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1171,7 +1181,7 @@
             }
           },
           "400": {
-            "description": "Invalid user data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1245,7 +1255,7 @@
             }
           },
           "400": {
-            "description": "Invalid sale data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1324,7 +1334,7 @@
             }
           },
           "400": {
-            "description": "Invalid product data",
+            "description": "Invalid operation with data",
             "content": {
               "application/json": {
                 "schema": {
@@ -1444,6 +1454,9 @@
         }
       },
       "ProductStockResponseDto": {
+        "required": [
+          "@class"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1465,7 +1478,13 @@
           },
           "unit_price": {
             "type": "number"
+          },
+          "@class": {
+            "type": "string"
           }
+        },
+        "discriminator": {
+          "propertyName": "@class"
         }
       },
       "SaleItemResponseDto": {
@@ -1490,6 +1509,9 @@
         }
       },
       "SaleResponseDto": {
+        "required": [
+          "@class"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1521,7 +1543,13 @@
           },
           "total": {
             "type": "number"
+          },
+          "@class": {
+            "type": "string"
           }
+        },
+        "discriminator": {
+          "propertyName": "@class"
         }
       },
       "SaleItemRequestDto": {
@@ -1543,7 +1571,7 @@
           }
         }
       },
-      "UpdateSaleRequestDto": {
+      "SaleRequestDto": {
         "required": [
           "items"
         ],
@@ -1627,27 +1655,6 @@
           },
           "phone_number": {
             "pattern": "([(]?\\d{2}[)]?)\\d{5}-?\\d{4}",
-            "type": "string"
-          }
-        }
-      },
-      "CreateSaleRequestDto": {
-        "required": [
-          "customer_cpf",
-          "items"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SaleItemRequestDto"
-            }
-          },
-          "customer_cpf": {
-            "maxLength": 11,
-            "minLength": 11,
             "type": "string"
           }
         }

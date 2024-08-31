@@ -121,15 +121,17 @@ public class UserServiceImpl implements UserService {
         var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        var userCpf = userDetails.getUsername();
-
-        if (cpf.equals(userCpf)) {
+        if (retrieveUserCpfFromToken().equals(cpf)) {
             throw new AccessDeniedException("You cannot delete your own account");
         }
 
         user.setActive(false);
         repository.save(user);
+    }
+
+    private String retrieveUserCpfFromToken() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
     }
 }

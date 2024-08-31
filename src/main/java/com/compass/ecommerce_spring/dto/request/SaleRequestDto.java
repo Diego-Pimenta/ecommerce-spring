@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Set;
 
-public record UpdateSaleRequestDto(
+public record SaleRequestDto(
         @NotEmpty(message = "Invalid items: Items must not be empty")
         Set<@Valid SaleItemRequestDto> items
 ) {

@@ -25,7 +25,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "User successfully created",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
@@ -65,7 +65,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -82,7 +82,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "User credentials don't match",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -98,7 +98,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -114,7 +114,7 @@ public interface UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid user data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),

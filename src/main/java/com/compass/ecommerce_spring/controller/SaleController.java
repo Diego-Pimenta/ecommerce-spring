@@ -1,7 +1,6 @@
 package com.compass.ecommerce_spring.controller;
 
-import com.compass.ecommerce_spring.dto.request.CreateSaleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateSaleRequestDto;
+import com.compass.ecommerce_spring.dto.request.SaleRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateSaleStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.SaleResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
@@ -24,14 +23,14 @@ public interface SaleController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Sale successfully created",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SaleResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid sale data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Sale data not achievable",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<SaleResponseDto> save(CreateSaleRequestDto createSaleRequestDto);
+    ResponseEntity<SaleResponseDto> save(SaleRequestDto saleRequestDto);
 
     @Operation(summary = "Retrieve a sale by id",
             description = "Get a sale object by specifying its id",
@@ -66,14 +65,14 @@ public interface SaleController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Sale successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SaleResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid sale data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Sale data not achievable",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<SaleResponseDto> update(Long id, UpdateSaleRequestDto updateSaleRequestDto);
+    ResponseEntity<SaleResponseDto> update(Long id, SaleRequestDto saleRequestDto);
 
     @Operation(summary = "Update a sale status by id",
             description = "Modify a sale object with body content by its id",
@@ -82,7 +81,7 @@ public interface SaleController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Sale successfully updated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SaleResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid sale data",
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -98,6 +97,8 @@ public interface SaleController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "Sale successfully deleted",
                             content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
                     @ApiResponse(responseCode = "404", description = "Sale not found",

@@ -1,11 +1,11 @@
 package com.compass.ecommerce_spring.service.impl;
 
-import com.compass.ecommerce_spring.dto.request.CreateSaleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateSaleRequestDto;
+import com.compass.ecommerce_spring.dto.request.SaleRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateSaleStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.SaleResponseDto;
 import com.compass.ecommerce_spring.entity.ProductStock;
 import com.compass.ecommerce_spring.entity.SaleItem;
+import com.compass.ecommerce_spring.entity.enums.Role;
 import com.compass.ecommerce_spring.entity.enums.SaleStatus;
 import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
@@ -21,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +46,14 @@ public class SaleServiceImpl implements SaleService {
 
     @CacheEvict(value = "sales", allEntries = true)
     @Override
-    public SaleResponseDto save(CreateSaleRequestDto createSaleRequestDto) {
-        var user = userRepository.findByCpf(createSaleRequestDto.customerCpf())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public SaleResponseDto save(SaleRequestDto saleRequestDto) {
+        var userCpf = retrieveUserCpfFromToken();
+
+        var user = userRepository.findByCpf(userCpf).orElseThrow();
 
         var sale = saleMapper.createSaleToEntity(user);
 
-        var saleItems = createSaleRequestDto.items()
+        var saleItems = saleRequestDto.items()
                 .stream()
                 .map(item -> {
                     var product = productRepository.findByIdAndActive(item.productId(), true)
@@ -80,7 +84,6 @@ public class SaleServiceImpl implements SaleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
     }
 
-    // TODO: HttpMessageNotWritableException: Could not write JSON: object is not an instance of declaring class
     @Cacheable(value = "sales")
     @Transactional(readOnly = true)
     @Override
@@ -93,20 +96,13 @@ public class SaleServiceImpl implements SaleService {
 
     @CachePut(value = "sales", key = "#id")
     @Override
-    public SaleResponseDto update(Long id, UpdateSaleRequestDto updateSaleRequestDto) {
+    public SaleResponseDto update(Long id, SaleRequestDto saleRequestDto) {
         var sale = saleRepository.findByIdFetchItems(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
-        // só é possível atualizar os itens da venda caso não tenha sido paga
-        if (sale.getStatus().equals(SaleStatus.PAID) ||
-                sale.getStatus().equals(SaleStatus.SHIPPED) ||
-                sale.getStatus().equals(SaleStatus.DONE)
-        ) {
-            throw new BusinessException("Sale was already processed");
-        }
-        if (sale.getStatus().equals(SaleStatus.CANCELLED)) {
-            throw new BusinessException("Sale was cancelled");
-        }
+        checkCancelledSale(sale.getStatus());
+        checkProcessedSale(sale.getStatus());
+        checkSaleOwner(sale.getCustomer().getCpf());
 
         var existingSaleItems = sale.getItems()
                 .stream()
@@ -117,7 +113,7 @@ public class SaleServiceImpl implements SaleService {
                 })
                 .collect(Collectors.toSet());
 
-        var saleItems = updateSaleRequestDto.items()
+        var saleItems = saleRequestDto.items()
                 .stream()
                 .map(item -> {
                     var product = productRepository.findByIdAndActive(item.productId(), true)
@@ -146,25 +142,20 @@ public class SaleServiceImpl implements SaleService {
         var sale = saleRepository.findByIdFetchItems(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
-        if (updateSaleStatusRequestDto.status().equals(SaleStatus.WAITING_PAYMENT)) { // importante para funcionar o 5° if
-            throw new BusinessException("Status already in use");
-        }
-        if (sale.getStatus().equals(SaleStatus.DONE)) {
-            throw new BusinessException("Sale was already completed");
-        }
-        if (sale.getStatus().equals(SaleStatus.CANCELLED)) {
-            throw new BusinessException("Sale was cancelled");
-        }
+        checkCompletedSale(sale.getStatus());
+        checkCancelledSale(sale.getStatus());
+        checkSaleOwner(sale.getCustomer().getCpf());
 
         // verifica se a venda foi cancelada depois de paga e antes de concluída
         if (updateSaleStatusRequestDto.status().equals(SaleStatus.CANCELLED) && !sale.getStatus().equals(SaleStatus.WAITING_PAYMENT)) {
             sale.getItems().forEach(item -> addToStock(item.getId().getProduct(), item.getQuantity()));
         }
 
-        validateStock(sale.getItems()); // tem que rodar antes de tirar os produtos do estoque
-
         // desconta os produtos do estoque apenas quando sair do status de WAITING_PAYMENT
-        if (sale.getStatus().equals(SaleStatus.WAITING_PAYMENT) && !updateSaleStatusRequestDto.status().equals(SaleStatus.CANCELLED)) {
+        if (sale.getStatus().equals(SaleStatus.WAITING_PAYMENT) &&
+                !updateSaleStatusRequestDto.status().equals(SaleStatus.CANCELLED) &&
+                !updateSaleStatusRequestDto.status().equals(SaleStatus.WAITING_PAYMENT)) {
+            validateStock(sale.getItems());
             sale.getItems().forEach(item -> removeFromStock(item.getId().getProduct(), item.getQuantity()));
         }
 
@@ -180,14 +171,10 @@ public class SaleServiceImpl implements SaleService {
         var sale = saleRepository.findByIdFetchItems(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
-        if (sale.getStatus().equals(SaleStatus.DONE)) {
-            throw new BusinessException("Sale was already completed");
-        }
+        checkCompletedSale(sale.getStatus());
 
-        // devolve os produtos ao estoque caso tenham sido removidos
-        if (sale.getStatus().equals(SaleStatus.PAID) ||
-                sale.getStatus().equals(SaleStatus.SHIPPED)
-        ) {
+        // devolve os produtos ao estoque caso tenham sido separados
+        if (sale.getStatus().equals(SaleStatus.PAID) || sale.getStatus().equals(SaleStatus.SHIPPED)) {
             sale.getItems().forEach(item -> addToStock(item.getId().getProduct(), item.getQuantity()));
         }
 
@@ -195,18 +182,21 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.save(sale);
     }
 
+    // valida quantidade do estoque e status do produto
     private void validateStock(Set<SaleItem> saleItems) {
-        var insufficientStock = saleItems
+        saleItems
                 .stream()
-                .anyMatch(item -> !isProductAvailableInStock(item.getId().getProduct(), item.getQuantity()));
-
-        if (insufficientStock) {
-            throw new BusinessException("Insufficient stock of products");
-        }
+                .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity() ||
+                        !item.getId().getProduct().getActive())
+                .findFirst()
+                .ifPresent(item -> {
+                    throw new BusinessException("Product present in sale unavailable: " + item.getId().getProduct().getName());
+                });
     }
 
-    private boolean isProductAvailableInStock(ProductStock product, Integer quantity) {
-        return product.getQuantity() >= quantity;
+    private void addToStock(ProductStock product, Integer quantity) {
+        product.setQuantity(product.getQuantity() + quantity);
+        productRepository.save(product);
     }
 
     private void removeFromStock(ProductStock product, Integer quantity) {
@@ -214,8 +204,44 @@ public class SaleServiceImpl implements SaleService {
         productRepository.save(product);
     }
 
-    private void addToStock(ProductStock product, Integer quantity) {
-        product.setQuantity(product.getQuantity() + quantity);
-        productRepository.save(product);
+    private String retrieveUserCpfFromToken() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
+    }
+
+    private Role retrieveUserRoleFromToken() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(Role::valueOf)
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private void checkSaleOwner(String cpf) {
+        if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
+            throw new BusinessException("Sale belongs to another user");
+        }
+    }
+
+    private void checkCompletedSale(SaleStatus status) {
+        if (status.equals(SaleStatus.DONE)) {
+            throw new BusinessException("Sale was already completed");
+        }
+    }
+
+    private void checkCancelledSale(SaleStatus status) {
+        if (status.equals(SaleStatus.CANCELLED)) {
+            throw new BusinessException("Sale was cancelled");
+        }
+    }
+
+    private void checkProcessedSale(SaleStatus status) {
+        if (status.equals(SaleStatus.PAID) || status.equals(SaleStatus.SHIPPED) || status.equals(SaleStatus.DONE)) {
+            throw new BusinessException("Sale was already processed");
+        }
     }
 }
