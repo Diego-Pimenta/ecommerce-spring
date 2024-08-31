@@ -45,8 +45,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC).permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
-//                        .requestMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/products").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/v1/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/v1/users/role/**", "/v1/products/status/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,0 +1,22 @@
+POST /v1/products - ADMIN
+GET /v1/products - AUTHENTICATED
+GET /v1/products/? - AUTHENTICATED
+UPDATE /v1/products/? - ADMIN
+PATCH /v1/products/status/? - ADMIN
+DELETE /v1/products/? - ADMIN
+
+POST /v1/users - PUBLIC
+GET /v1/users - AUTHENTICATED
+GET /v1/users/? - AUTHENTICATED
+UPDATE /v1/users/? - AUTHENTICATED
+PATCH /v1/users/change-password/? - PUBLIC
+PATCH /v1/users/role/? - ADMIN
+PATCH /v1/users/status/? - AUTHENTICATED
+DELETE /v1/users/? - ADMIN
+
+POST /v1/sales - AUTHENTICATED
+GET /v1/sales - AUTHENTICATED
+GET /v1/sales/? - AUTHENTICATED
+UPDATE /v1/sales/? - AUTHENTICATED
+PATCH /v1/sales/status/? - AUTHENTICATED
+DELETE /v1/sales/? - ADMIN

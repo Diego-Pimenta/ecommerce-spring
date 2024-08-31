@@ -102,7 +102,7 @@ public class SaleServiceImpl implements SaleService {
 
         checkCancelledSale(sale.getStatus());
         checkProcessedSale(sale.getStatus());
-        checkSaleOwner(sale.getCustomer().getCpf());
+        checkPermission(sale.getCustomer().getCpf());
 
         var existingSaleItems = sale.getItems()
                 .stream()
@@ -144,7 +144,7 @@ public class SaleServiceImpl implements SaleService {
 
         checkCompletedSale(sale.getStatus());
         checkCancelledSale(sale.getStatus());
-        checkSaleOwner(sale.getCustomer().getCpf());
+        checkPermission(sale.getCustomer().getCpf());
 
         // verifica se a venda foi cancelada depois de paga e antes de concluída
         if (updateSaleStatusRequestDto.status().equals(SaleStatus.CANCELLED) && !sale.getStatus().equals(SaleStatus.WAITING_PAYMENT)) {
@@ -182,8 +182,8 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.save(sale);
     }
 
-    // valida quantidade do estoque e status do produto
     private void validateStock(Set<SaleItem> saleItems) {
+        // valida quantidade do estoque e status do produto
         saleItems
                 .stream()
                 .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity() ||
@@ -221,7 +221,7 @@ public class SaleServiceImpl implements SaleService {
                 .orElseThrow();
     }
 
-    private void checkSaleOwner(String cpf) {
+    private void checkPermission(String cpf) {
         if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
             throw new BusinessException("Sale belongs to another user");
         }

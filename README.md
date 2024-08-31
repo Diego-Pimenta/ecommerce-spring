@@ -24,4 +24,4 @@
 
 [X] Somente usuários com permissão de ADMIN podem deletar informações do sistema. PESO (3)
 
-[] Somente usuários com permissão de ADMIN podem cadastrar e atualizar novos produtos e outros usuários ADMIN. PESO (2)
+[X] Somente usuários com permissão de ADMIN podem cadastrar e atualizar novos produtos e outros usuários ADMIN. PESO (2)

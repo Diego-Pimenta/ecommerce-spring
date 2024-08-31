@@ -6,6 +6,8 @@ import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
+import com.compass.ecommerce_spring.entity.enums.Role;
+import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.UserRepository;
@@ -14,6 +16,7 @@ import com.compass.ecommerce_spring.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -70,6 +73,8 @@ public class UserServiceImpl implements UserService {
         var existingUser = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        checkPermission(cpf);
+
         var existingUserByEmail = repository.findByEmail(updateUserRequestDto.email());
 
         if (existingUserByEmail.isPresent() && !existingUserByEmail.get().getCpf().equals(cpf)) {
@@ -111,6 +116,8 @@ public class UserServiceImpl implements UserService {
         var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        checkPermission(cpf); // caso um usuário se inative, apenas um admin pode ativá-lo de volta
+
         user.setActive(updateUserStatusRequestDto.active());
         var updateUser = repository.save(user);
         return mapper.toDto(updateUser);
@@ -133,5 +140,23 @@ public class UserServiceImpl implements UserService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userDetails = (UserDetails) authentication.getPrincipal();
         return userDetails.getUsername();
+    }
+
+    private Role retrieveUserRoleFromToken() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(Role::valueOf)
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private void checkPermission(String cpf) {
+        // somente admin pode alterar informações da conta dos outros
+        if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
+            throw new BusinessException("Account belongs to another user");
+        }
     }
 }

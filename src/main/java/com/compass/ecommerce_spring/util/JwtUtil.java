@@ -53,6 +53,7 @@ public class JwtUtil {
         return jwtProperties.expirationTime();
     }
 
+    // TODO: adicionar validação de usuário ativo
     public boolean isTokenValid(String token) {
         return !Jwts
                 .parser()
