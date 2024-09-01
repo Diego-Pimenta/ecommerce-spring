@@ -1,27 +1,37 @@
-[X] Permitir que os usuários criem, leiam, atualizem e excluam produtos. PESO (3)
+# Backend Ecommerce Spring
 
-[X] Criar validações que façam sentido para os dados de entrada, por exemplo: Preço do produto só pode ser positivo. PESO (2)
+## Descrição
 
-[X] Um produto não pode ser DELETADO após ser incluso em uma venda, porém deve ter alguma maneira de INATIVAR ele. PESO (2)
+O projeto é uma aplicação de ecommerce capaz de criar e gerenciar produtos, estoque dos produtos, vendas e usuários.
 
-[X] Controlar o estoque do produto de forma que ele não possa ser vendido caso o estoque seja menor do que a quantidade necessária para a venda ou igual a zero. PESO (3)
+## Requisitos
 
-[X] Permitir que os usuários criem, leiam, atualizem e excluam vendas (Uma venda tem que ter no mínimo 1 produto para ser concluída). PESO (3)
+- Certifique-se de ter o Docker instalado para a execução da aplicação.
 
-[X] Criar métodos de relatório de vendas por data (informada pelo cliente), por mês e pela semana atual (considerar dias úteis). PESO (1)
+## Instruções de Uso
 
-[X] Os métodos “GET ALL” de Produtos e Vendas devem salvar as informações no CACHE da aplicação, para que as próximas buscas sejam mais rápidas. Deve ser feito um bom gerenciamento do cache, por exemplo: ao inserir uma nova venda, deletar o cache, para que a informação seja buscada no banco de dados diretamente e venha atualizada. PESO (1)
+1. Clone o repositório com o Git.
+```bash
+git clone https://github.com/Diego-Pimenta/ecommerce-spring.git
+```
 
-[X] Todas as EXCEÇÕES devem ser tratadas e seguir o mesmo padrão de resposta. PESO (1)
+2. Entre na pasta raiz do projeto e inicie os containers definidos no "docker-compose.yaml".
+```bash
+cd ecommerce-spring
+docker compose up -d
+```
 
-[X] Todos os campos data, devem seguir o padrão ISO 8601 (exemplo: 2023-07-20T12:00:00Z). PESO (1)
+3. Interaja com a API no Postman ou Insomnia com a seguinte URL:
+```bash
+http://localhost:8080/api
+```
 
-[X] Implementar Autenticação via Token JWT. PESO (3)
+4. Para acessar a plataforma com contas já cadastradas no banco de dados, utilize os seguintes dados de login:
 
-[X] Implementar Autorização para os usuários autenticados. PESO (3)
+- Admin - CPF: 12345678901, Senha: adminpass.
+- Client - CPF: 12345678902, Senha: password1.
+- Client - CPF: 12345678903, Senha: password2.
 
-[X] Implementar um método para resetar a senha do usuário. PESO (3)
+## Diagrama de Classes
 
-[X] Somente usuários com permissão de ADMIN podem deletar informações do sistema. PESO (3)
-
-[X] Somente usuários com permissão de ADMIN podem cadastrar e atualizar novos produtos e outros usuários ADMIN. PESO (2)
+<img src="/docs/Class_diagram.png" alt="Diagrama de Classes">
