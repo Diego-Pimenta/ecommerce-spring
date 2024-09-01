@@ -77,7 +77,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional(readOnly = true)
     @Override
     public SaleResponseDto findById(Long id) {
-        return saleRepository.findByIdFetchItems(id)
+        return saleRepository.findById(id)
                 .map(saleMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
     }
@@ -86,7 +86,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional(readOnly = true)
     @Override
     public List<SaleResponseDto> findAll() {
-        return saleRepository.findAllFetchItems()
+        return saleRepository.findAll()
                 .stream()
                 .map(saleMapper::toDto)
                 .collect(Collectors.toList());
@@ -95,7 +95,7 @@ public class SaleServiceImpl implements SaleService {
     @CachePut(value = "sales", key = "#id")
     @Override
     public SaleResponseDto update(Long id, SaleRequestDto saleRequestDto) {
-        var sale = saleRepository.findByIdFetchItems(id)
+        var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
         checkCancelledSale(sale.getStatus());
@@ -129,7 +129,7 @@ public class SaleServiceImpl implements SaleService {
     @CachePut(value = "sales", key = "#id")
     @Override
     public SaleResponseDto updateStatus(Long id, UpdateSaleStatusRequestDto updateSaleStatusRequestDto) {
-        var sale = saleRepository.findByIdFetchItems(id)
+        var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
         checkCompletedSale(sale.getStatus());
@@ -160,7 +160,7 @@ public class SaleServiceImpl implements SaleService {
     @CacheEvict(value = "sales", allEntries = true)
     @Override
     public void delete(Long id) {
-        var sale = saleRepository.findByIdFetchItems(id)
+        var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
         checkCompletedSale(sale.getStatus());

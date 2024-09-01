@@ -30,7 +30,7 @@ public class ReportServiceImpl implements ReportService {
     public List<ReportResponseDto> findByDate(String cpf, LocalDate date) {
         accessAuthority.checkPermission(cpf);
 
-        return repository.findAllFetchItems()
+        return repository.findAll()
                 .stream()
                 .filter(sale -> sale.getMoment().toLocalDate().isEqual(date))
                 .map(mapper::toReportDto)
@@ -41,7 +41,7 @@ public class ReportServiceImpl implements ReportService {
     public List<ReportResponseDto> findByMonth(String cpf, YearMonth month) {
         accessAuthority.checkPermission(cpf);
 
-        return repository.findAllFetchItems()
+        return repository.findAll()
                 .stream()
                 .filter(sale -> YearMonth.from(sale.getMoment()).equals(month))
                 .map(mapper::toReportDto)

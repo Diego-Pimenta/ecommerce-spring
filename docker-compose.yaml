@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:7.4-alpine
+    image: redis:latest
     container_name: redis
     restart: always
     ports:
@@ -10,7 +10,7 @@ services:
     volumes:
       - cache:/data
     networks:
-      - backend
+      - ecommerce
 
   mysqldb:
     image: mysql:latest
@@ -27,17 +27,37 @@ services:
       - data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
-      - backend
+      - ecommerce
+
+  backend:
+    image: diegopimenta/ecommerce-spring:latest
+    container_name: backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=redispass
+      - MYSQL_HOST=mysqldb
+      - MYSQL_PORT=3306
+      - JWT_SECRET_KEY=5be7c41496c7cb2030b84e63a190d47f6e409a5addaf0d449bf77dc1fc0c6f9c
+      - JWT_EXPIRATION_TIME=3600000
+    depends_on:
+      - redis
+      - mysqldb
+    networks:
+      - ecommerce
 
 volumes:
   cache:
-    name: cache
+    name: cache-vol
     driver: local
   data:
-    name: data
+    name: data-vol
     driver: local
 
 networks:
-  backend:
-    name: backend-net
+  ecommerce:
+    name: ecommerce-net
     driver: bridge
