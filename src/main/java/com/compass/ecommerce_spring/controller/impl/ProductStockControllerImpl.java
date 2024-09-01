@@ -2,8 +2,8 @@ package com.compass.ecommerce_spring.controller.impl;
 
 import com.compass.ecommerce_spring.controller.ProductStockController;
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import jakarta.validation.Valid;
@@ -41,7 +41,7 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<ProductStockResponseDto> findById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -54,7 +54,7 @@ public class ProductStockControllerImpl implements ProductStockController {
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<ProductStockResponseDto> update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody @Valid UpdateProductStockRequestDto updateProductStockRequestDto
     ) {
         return ResponseEntity.ok(service.update(id, updateProductStockRequestDto));
@@ -63,15 +63,15 @@ public class ProductStockControllerImpl implements ProductStockController {
     @PatchMapping("/status/{id}")
     @Override
     public ResponseEntity<ProductStockResponseDto> updateStatus(
-            @PathVariable Long id,
-            @RequestBody @Valid UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto
+            @PathVariable("id") Long id,
+            @RequestBody @Valid UpdateActiveStatusRequestDto updateActiveStatusRequestDto
     ) {
-        return ResponseEntity.ok(service.updateStatus(id, updateProductStockStatusRequestDto));
+        return ResponseEntity.ok(service.updateStatus(id, updateActiveStatusRequestDto));
     }
 
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

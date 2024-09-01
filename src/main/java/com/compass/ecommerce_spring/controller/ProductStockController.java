@@ -1,8 +1,8 @@
 package com.compass.ecommerce_spring.controller;
 
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,7 +91,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<ProductStockResponseDto> updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
+    ResponseEntity<ProductStockResponseDto> updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
 
     @Operation(summary = "Delete a product in stock by id",
             description = "Remove a product object by specifying its id",

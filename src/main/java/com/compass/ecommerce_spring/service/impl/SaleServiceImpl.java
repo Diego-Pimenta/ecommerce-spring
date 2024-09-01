@@ -57,7 +57,7 @@ public class SaleServiceImpl implements SaleService {
                 .stream()
                 .map(item -> {
                     var product = productRepository.findByIdAndActive(item.productId(), true)
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock or inactive"));
                     return saleItemMapper.toEntity(sale, product, item.quantity());
                 })
                 .collect(Collectors.toSet());
@@ -71,7 +71,7 @@ public class SaleServiceImpl implements SaleService {
                 .map(saleItemRepository::save)
                 .collect(Collectors.toSet());
 
-        createdSale.setItems(createdSaleItems);
+        createdSale.getItems().addAll(createdSaleItems);
         return saleMapper.toDto(createdSale);
     }
 
@@ -104,28 +104,19 @@ public class SaleServiceImpl implements SaleService {
         checkProcessedSale(sale.getStatus());
         checkPermission(sale.getCustomer().getCpf());
 
-        var existingSaleItems = sale.getItems()
-                .stream()
-                .map(item -> {
-                    var product = productRepository.findByIdAndActive(item.getId().getProduct().getId(), true)
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
-                    return saleItemMapper.toEntity(sale, product, item.getQuantity());
-                })
-                .collect(Collectors.toSet());
-
         var saleItems = saleRequestDto.items()
                 .stream()
                 .map(item -> {
                     var product = productRepository.findByIdAndActive(item.productId(), true)
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock or inactive"));
                     return saleItemMapper.toEntity(sale, product, item.quantity());
                 })
                 .collect(Collectors.toSet());
 
         validateStock(saleItems);
 
-        // TODO: ObjectOptimisticLockingFailureException: Row was updated or deleted by another transaction
-        existingSaleItems.forEach(item -> saleItemRepository.deleteBySaleId(sale.getId()));
+        saleItemRepository.deleteAll(sale.getItems());
+        sale.getItems().clear();
 
         var updatedSaleItems = saleItems
                 .stream()
@@ -144,6 +135,7 @@ public class SaleServiceImpl implements SaleService {
 
         checkCompletedSale(sale.getStatus());
         checkCancelledSale(sale.getStatus());
+        checkRegressingStatus(sale.getStatus(), updateSaleStatusRequestDto.status());
         checkPermission(sale.getCustomer().getCpf());
 
         // verifica se a venda foi cancelada depois de paga e antes de concluída
@@ -161,7 +153,7 @@ public class SaleServiceImpl implements SaleService {
 
         sale.setStatus(updateSaleStatusRequestDto.status());
         var updatedSale = saleRepository.save(sale);
-        updatedSale.setItems(sale.getItems());
+        updatedSale.getItems().addAll(sale.getItems());
         return saleMapper.toDto(updatedSale);
     }
 
@@ -183,15 +175,15 @@ public class SaleServiceImpl implements SaleService {
     }
 
     private void validateStock(Set<SaleItem> saleItems) {
-        // valida quantidade do estoque e status do produto
-        saleItems
+        var insufficientProduct = saleItems
                 .stream()
-                .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity() ||
-                        !item.getId().getProduct().getActive())
-                .findFirst()
-                .ifPresent(item -> {
-                    throw new BusinessException("Product present in sale unavailable: " + item.getId().getProduct().getName());
-                });
+                .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity())
+                .findFirst();
+
+        if (insufficientProduct.isPresent()) {
+            var productName = insufficientProduct.get().getId().getProduct().getName();
+            throw new BusinessException("Unavailable quantity of product: " + productName);
+        }
     }
 
     private void addToStock(ProductStock product, Integer quantity) {
@@ -242,6 +234,12 @@ public class SaleServiceImpl implements SaleService {
     private void checkProcessedSale(SaleStatus status) {
         if (status.equals(SaleStatus.PAID) || status.equals(SaleStatus.SHIPPED) || status.equals(SaleStatus.DONE)) {
             throw new BusinessException("Sale was already processed");
+        }
+    }
+
+    private void checkRegressingStatus(SaleStatus status, SaleStatus newStatus) {
+        if (status.equals(SaleStatus.SHIPPED) && newStatus.equals(SaleStatus.PAID)) {
+            throw new BusinessException("Sale cannot regress status");
         }
     }
 }

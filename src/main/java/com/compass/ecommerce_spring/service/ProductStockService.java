@@ -1,8 +1,8 @@
 package com.compass.ecommerce_spring.service;
 
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public interface ProductStockService {
 
     ProductStockResponseDto update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
 
-    ProductStockResponseDto updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto);
+    ProductStockResponseDto updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
 
     void delete(Long id);
 }

@@ -40,7 +40,7 @@ public class SaleControllerImpl implements SaleController {
 
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<SaleResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<SaleResponseDto> findById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -53,7 +53,7 @@ public class SaleControllerImpl implements SaleController {
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<SaleResponseDto> update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody @Valid SaleRequestDto saleRequestDto
     ) {
         return ResponseEntity.ok(service.update(id, saleRequestDto));
@@ -62,7 +62,7 @@ public class SaleControllerImpl implements SaleController {
     @PatchMapping("/status/{id}")
     @Override
     public ResponseEntity<SaleResponseDto> updateStatus(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody @Valid UpdateSaleStatusRequestDto updateSaleStatusRequestDto
     ) {
         return ResponseEntity.ok(service.updateStatus(id, updateSaleStatusRequestDto));
@@ -70,7 +70,7 @@ public class SaleControllerImpl implements SaleController {
 
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

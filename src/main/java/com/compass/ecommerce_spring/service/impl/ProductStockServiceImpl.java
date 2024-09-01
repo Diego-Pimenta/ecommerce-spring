@@ -1,8 +1,8 @@
 package com.compass.ecommerce_spring.service.impl;
 
 import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
@@ -77,11 +77,11 @@ public class ProductStockServiceImpl implements ProductStockService {
 
     @CachePut(value = "products", key = "#id")
     @Override
-    public ProductStockResponseDto updateStatus(Long id, UpdateProductStockStatusRequestDto updateProductStockStatusRequestDto) {
+    public ProductStockResponseDto updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto) {
         var product = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock"));
 
-        product.setActive(updateProductStockStatusRequestDto.active());
+        product.setActive(updateActiveStatusRequestDto.active());
         var updatedProduct = repository.save(product);
         return mapper.toDto(updatedProduct);
     }

@@ -4,7 +4,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.entity.enums.Role;
 import com.compass.ecommerce_spring.exception.custom.BusinessException;
@@ -112,13 +112,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto) {
+    public UserResponseDto updateStatus(String cpf, UpdateActiveStatusRequestDto updateActiveStatusRequestDto) {
         var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         checkPermission(cpf); // caso um usuário se inative, apenas um admin pode ativá-lo de volta
 
-        user.setActive(updateUserStatusRequestDto.active());
+        user.setActive(updateActiveStatusRequestDto.active());
         var updateUser = repository.save(user);
         return mapper.toDto(updateUser);
     }

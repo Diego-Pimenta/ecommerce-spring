@@ -19,8 +19,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
-        var user = repository.findByCpf(cpf)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var user = repository.findByCpfAndActive(cpf, true)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found or inactive"));
 
         var grantedAuthorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
 

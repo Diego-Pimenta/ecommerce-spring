@@ -4,7 +4,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface UserService {
 
     UserResponseDto updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto);
 
-    UserResponseDto updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto);
+    UserResponseDto updateStatus(String cpf, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
 
     void delete(String cpf);
 }

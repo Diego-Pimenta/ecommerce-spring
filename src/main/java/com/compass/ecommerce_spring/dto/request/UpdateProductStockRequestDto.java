@@ -1,6 +1,7 @@
 package com.compass.ecommerce_spring.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ public record UpdateProductStockRequestDto(
         Integer quantity,
         @NotNull(message = "Invalid unit price: Unit price must not be null")
         @Min(value = 0, message = "Invalid unit price: Unit price must be a positive number")
+        @Max(value = 999999, message = "Invalid unit price: Unit price must not be greater than 999.999")
         @JsonProperty(value = "unit_price")
         BigDecimal unitPrice,
         @NotBlank(message = "Invalid category: Category must not be blank")

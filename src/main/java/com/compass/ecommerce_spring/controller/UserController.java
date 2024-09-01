@@ -4,7 +4,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -121,7 +121,7 @@ public interface UserController {
                     @ApiResponse(responseCode = "404", description = "User not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<UserResponseDto> updateStatus(String cpf, UpdateUserStatusRequestDto updateUserStatusRequestDto);
+    ResponseEntity<UserResponseDto> updateStatus(String cpf, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
 
     @Operation(summary = "Delete an user by cpf",
             description = "Remove an user object by specifying its cpf",

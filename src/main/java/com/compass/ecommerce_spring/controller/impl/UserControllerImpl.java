@@ -5,7 +5,7 @@ import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserStatusRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.service.UserService;
 import jakarta.validation.Valid;
@@ -36,14 +36,14 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<UserResponseDto> save(@RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         UserResponseDto userResponseDto = service.save(createUserRequestDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{cpf}")
                 .buildAndExpand(userResponseDto.cpf()).toUri();
         return ResponseEntity.created(uri).body(userResponseDto);
     }
 
     @GetMapping("/{cpf}")
     @Override
-    public ResponseEntity<UserResponseDto> findByCpf(@PathVariable String cpf) {
+    public ResponseEntity<UserResponseDto> findByCpf(@PathVariable("cpf") String cpf) {
         return ResponseEntity.ok(service.findByCpf(cpf));
     }
 
@@ -56,7 +56,7 @@ public class UserControllerImpl implements UserController {
     @PutMapping("/{cpf}")
     @Override
     public ResponseEntity<UserResponseDto> update(
-            @PathVariable String cpf,
+            @PathVariable("cpf") String cpf,
             @RequestBody @Valid UpdateUserRequestDto updateUserRequestDto
     ) {
         return ResponseEntity.ok(service.update(cpf, updateUserRequestDto));
@@ -65,7 +65,7 @@ public class UserControllerImpl implements UserController {
     @PatchMapping("/change-password/{cpf}")
     @Override
     public ResponseEntity<UserResponseDto> updatePassword(
-            @PathVariable String cpf,
+            @PathVariable("cpf") String cpf,
             @RequestBody @Valid UpdateUserPasswordRequestDto updateUserPasswordRequestDto
     ) {
         return ResponseEntity.ok(service.updatePassword(cpf, updateUserPasswordRequestDto));
@@ -74,7 +74,7 @@ public class UserControllerImpl implements UserController {
     @PatchMapping("/role/{cpf}")
     @Override
     public ResponseEntity<UserResponseDto> updateRole(
-            @PathVariable String cpf,
+            @PathVariable("cpf") String cpf,
             @RequestBody @Valid UpdateUserRoleRequestDto updateUserRoleRequestDto
     ) {
         return ResponseEntity.ok(service.updateRole(cpf, updateUserRoleRequestDto));
@@ -83,15 +83,15 @@ public class UserControllerImpl implements UserController {
     @PatchMapping("/status/{cpf}")
     @Override
     public ResponseEntity<UserResponseDto> updateStatus(
-            @PathVariable String cpf,
-            @RequestBody @Valid UpdateUserStatusRequestDto updateUserStatusRequestDto
+            @PathVariable("cpf") String cpf,
+            @RequestBody @Valid UpdateActiveStatusRequestDto updateActiveStatusRequestDto
     ) {
-        return ResponseEntity.ok(service.updateStatus(cpf, updateUserStatusRequestDto));
+        return ResponseEntity.ok(service.updateStatus(cpf, updateActiveStatusRequestDto));
     }
 
     @DeleteMapping("/{cpf}")
     @Override
-    public ResponseEntity<Void> delete(@PathVariable String cpf) {
+    public ResponseEntity<Void> delete(@PathVariable("cpf") String cpf) {
         service.delete(cpf);
         return ResponseEntity.noContent().build();
     }
