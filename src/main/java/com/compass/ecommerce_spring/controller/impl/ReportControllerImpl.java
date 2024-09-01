@@ -4,6 +4,7 @@ import com.compass.ecommerce_spring.controller.ReportController;
 import com.compass.ecommerce_spring.dto.response.ReportResponseDto;
 import com.compass.ecommerce_spring.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class ReportControllerImpl implements ReportController {
     @Override
     public ResponseEntity<List<ReportResponseDto>> findByDate(
             @PathVariable("cpf") String cpf,
-            @PathVariable("date") LocalDate date
+            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         return ResponseEntity.ok(service.findByDate(cpf, date));
     }
@@ -34,7 +35,7 @@ public class ReportControllerImpl implements ReportController {
     @Override
     public ResponseEntity<List<ReportResponseDto>> findByMonth(
             @PathVariable("cpf") String cpf,
-            @PathVariable("month") YearMonth month
+            @PathVariable("month") @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
     ) {
         return ResponseEntity.ok(service.findByMonth(cpf, month));
     }
