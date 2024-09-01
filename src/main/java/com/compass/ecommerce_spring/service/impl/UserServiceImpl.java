@@ -1,24 +1,20 @@
 package com.compass.ecommerce_spring.service.impl;
 
 import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
-import com.compass.ecommerce_spring.entity.enums.Role;
-import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.UserRepository;
 import com.compass.ecommerce_spring.service.UserService;
 import com.compass.ecommerce_spring.service.mapper.UserMapper;
+import com.compass.ecommerce_spring.security.AccessAuthority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final AccessAuthority accessAuthority;
 
     @Override
     public UserResponseDto save(CreateUserRequestDto createUserRequestDto) {
@@ -73,7 +70,7 @@ public class UserServiceImpl implements UserService {
         var existingUser = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        checkPermission(cpf);
+        accessAuthority.checkPermission(cpf);
 
         var existingUserByEmail = repository.findByEmail(updateUserRequestDto.email());
 
@@ -116,7 +113,7 @@ public class UserServiceImpl implements UserService {
         var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        checkPermission(cpf); // caso um usuário se inative, apenas um admin pode ativá-lo de volta
+        accessAuthority.checkPermission(cpf); // caso um usuário se inative, apenas um admin pode ativá-lo de volta
 
         user.setActive(updateActiveStatusRequestDto.active());
         var updateUser = repository.save(user);
@@ -128,35 +125,11 @@ public class UserServiceImpl implements UserService {
         var user = repository.findByCpf(cpf)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (retrieveUserCpfFromToken().equals(cpf)) {
+        if (accessAuthority.retrieveUserCpfFromToken().equals(cpf)) {
             throw new AccessDeniedException("You cannot delete your own account");
         }
 
         user.setActive(false);
         repository.save(user);
-    }
-
-    private String retrieveUserCpfFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();
-    }
-
-    private Role retrieveUserRoleFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .map(Role::valueOf)
-                .findFirst()
-                .orElseThrow();
-    }
-
-    private void checkPermission(String cpf) {
-        // somente admin pode alterar informações da conta dos outros
-        if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
-            throw new BusinessException("Account belongs to another user");
-        }
     }
 }

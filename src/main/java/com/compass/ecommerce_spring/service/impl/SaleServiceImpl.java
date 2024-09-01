@@ -5,7 +5,6 @@ import com.compass.ecommerce_spring.dto.request.UpdateSaleStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.SaleResponseDto;
 import com.compass.ecommerce_spring.entity.ProductStock;
 import com.compass.ecommerce_spring.entity.SaleItem;
-import com.compass.ecommerce_spring.entity.enums.Role;
 import com.compass.ecommerce_spring.entity.enums.SaleStatus;
 import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
@@ -13,6 +12,7 @@ import com.compass.ecommerce_spring.repository.ProductStockRepository;
 import com.compass.ecommerce_spring.repository.SaleItemRepository;
 import com.compass.ecommerce_spring.repository.SaleRepository;
 import com.compass.ecommerce_spring.repository.UserRepository;
+import com.compass.ecommerce_spring.security.AccessAuthority;
 import com.compass.ecommerce_spring.service.SaleService;
 import com.compass.ecommerce_spring.service.mapper.SaleItemMapper;
 import com.compass.ecommerce_spring.service.mapper.SaleMapper;
@@ -21,9 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +40,12 @@ public class SaleServiceImpl implements SaleService {
     private final SaleItemRepository saleItemRepository;
     private final SaleMapper saleMapper;
     private final SaleItemMapper saleItemMapper;
+    private final AccessAuthority accessAuthority;
 
     @CacheEvict(value = "sales", allEntries = true)
     @Override
     public SaleResponseDto save(SaleRequestDto saleRequestDto) {
-        var userCpf = retrieveUserCpfFromToken();
+        var userCpf = accessAuthority.retrieveUserCpfFromToken();
 
         var user = userRepository.findByCpf(userCpf).orElseThrow();
 
@@ -102,7 +100,8 @@ public class SaleServiceImpl implements SaleService {
 
         checkCancelledSale(sale.getStatus());
         checkProcessedSale(sale.getStatus());
-        checkPermission(sale.getCustomer().getCpf());
+
+        accessAuthority.checkPermission(sale.getCustomer().getCpf());
 
         var saleItems = saleRequestDto.items()
                 .stream()
@@ -135,8 +134,9 @@ public class SaleServiceImpl implements SaleService {
 
         checkCompletedSale(sale.getStatus());
         checkCancelledSale(sale.getStatus());
-        checkRegressingStatus(sale.getStatus(), updateSaleStatusRequestDto.status());
-        checkPermission(sale.getCustomer().getCpf());
+        checkRegressingSaleStatus(sale.getStatus(), updateSaleStatusRequestDto.status());
+
+        accessAuthority.checkPermission(sale.getCustomer().getCpf());
 
         // verifica se a venda foi cancelada depois de paga e antes de concluída
         if (updateSaleStatusRequestDto.status().equals(SaleStatus.CANCELLED) && !sale.getStatus().equals(SaleStatus.WAITING_PAYMENT)) {
@@ -196,29 +196,6 @@ public class SaleServiceImpl implements SaleService {
         productRepository.save(product);
     }
 
-    private String retrieveUserCpfFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();
-    }
-
-    private Role retrieveUserRoleFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .map(Role::valueOf)
-                .findFirst()
-                .orElseThrow();
-    }
-
-    private void checkPermission(String cpf) {
-        if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
-            throw new BusinessException("Sale belongs to another user");
-        }
-    }
-
     private void checkCompletedSale(SaleStatus status) {
         if (status.equals(SaleStatus.DONE)) {
             throw new BusinessException("Sale was already completed");
@@ -237,7 +214,7 @@ public class SaleServiceImpl implements SaleService {
         }
     }
 
-    private void checkRegressingStatus(SaleStatus status, SaleStatus newStatus) {
+    private void checkRegressingSaleStatus(SaleStatus status, SaleStatus newStatus) {
         if (status.equals(SaleStatus.SHIPPED) && newStatus.equals(SaleStatus.PAID)) {
             throw new BusinessException("Sale cannot regress status");
         }

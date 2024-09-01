@@ -1,15 +1,11 @@
 package com.compass.ecommerce_spring.service.impl;
 
 import com.compass.ecommerce_spring.dto.response.ReportResponseDto;
-import com.compass.ecommerce_spring.entity.enums.Role;
-import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.repository.SaleRepository;
 import com.compass.ecommerce_spring.service.ReportService;
 import com.compass.ecommerce_spring.service.mapper.SaleMapper;
+import com.compass.ecommerce_spring.security.AccessAuthority;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +24,11 @@ public class ReportServiceImpl implements ReportService {
 
     private final SaleRepository repository;
     private final SaleMapper mapper;
+    private final AccessAuthority accessAuthority;
 
     @Override
     public List<ReportResponseDto> findByDate(String cpf, LocalDate date) {
-        checkPermission(cpf);
+        accessAuthority.checkPermission(cpf);
 
         return repository.findAllFetchItems()
                 .stream()
@@ -42,7 +39,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ReportResponseDto> findByMonth(String cpf, YearMonth month) {
-        checkPermission(cpf);
+        accessAuthority.checkPermission(cpf);
 
         return repository.findAllFetchItems()
                 .stream()
@@ -53,7 +50,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ReportResponseDto> findByCurrentWeek(String cpf) {
-        checkPermission(cpf);
+        accessAuthority.checkPermission(cpf);
 
         var now = LocalDate.now();
         var startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
@@ -63,28 +60,5 @@ public class ReportServiceImpl implements ReportService {
                 .stream()
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
-    }
-
-    private String retrieveUserCpfFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();
-    }
-
-    private Role retrieveUserRoleFromToken() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .map(Role::valueOf)
-                .findFirst()
-                .orElseThrow();
-    }
-
-    private void checkPermission(String cpf) {
-        if (retrieveUserRoleFromToken().equals(Role.CLIENT) && !retrieveUserCpfFromToken().equals(cpf)) {
-            throw new BusinessException("Cannot access reports of other users");
-        }
     }
 }
