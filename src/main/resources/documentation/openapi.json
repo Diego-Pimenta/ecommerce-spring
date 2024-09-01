@@ -26,6 +26,10 @@
       "description": "Contains operations related with the user"
     },
     {
+      "name": "Report",
+      "description": "Contains operations related with the report"
+    },
+    {
       "name": "Sale",
       "description": "Contains operations related with the sale"
     },
@@ -1007,7 +1011,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateUserStatusRequestDto"
+                "$ref": "#/components/schemas/UpdateActiveStatusRequestDto"
               }
             }
           },
@@ -1316,7 +1320,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProductStockStatusRequestDto"
+                "$ref": "#/components/schemas/UpdateActiveStatusRequestDto"
               }
             }
           },
@@ -1355,6 +1359,167 @@
           },
           "404": {
             "description": "Product not found in stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/reports/user/{cpf}/month/{month}": {
+      "get": {
+        "tags": [
+          "Report",
+          "Get"
+        ],
+        "summary": "Retrieve all sales by month",
+        "description": "Get all sale objects by specifying its month",
+        "operationId": "findByMonth",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sales successfully retrieved by month",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/reports/user/{cpf}/date/{date}": {
+      "get": {
+        "tags": [
+          "Report",
+          "Get"
+        ],
+        "summary": "Retrieve all sales by date",
+        "description": "Get all sale objects by specifying its date",
+        "operationId": "findByDate",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sales successfully retrieved by date",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "security": []
+          }
+        ]
+      }
+    },
+    "/v1/reports/user/{cpf}/current-week": {
+      "get": {
+        "tags": [
+          "Report",
+          "Get"
+        ],
+        "summary": "Retrieve all sales by current week",
+        "description": "Get all sale objects by current week",
+        "operationId": "findByCurrentWeek",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sales successfully retrieved by current week",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
             "content": {
               "application/json": {
                 "schema": {
@@ -1615,6 +1780,7 @@
             "type": "boolean"
           },
           "unit_price": {
+            "maximum": 999999,
             "minimum": 0,
             "type": "number"
           }
@@ -1684,6 +1850,7 @@
             "type": "string"
           },
           "unit_price": {
+            "maximum": 999999,
             "minimum": 0,
             "type": "number"
           }
@@ -1720,7 +1887,7 @@
           }
         }
       },
-      "UpdateUserStatusRequestDto": {
+      "UpdateActiveStatusRequestDto": {
         "required": [
           "active"
         ],
@@ -1783,14 +1950,35 @@
           }
         }
       },
-      "UpdateProductStockStatusRequestDto": {
-        "required": [
-          "active"
-        ],
+      "ReportResponseDto": {
         "type": "object",
         "properties": {
-          "active": {
-            "type": "boolean"
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "moment": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "WAITING_PAYMENT",
+              "PAID",
+              "SHIPPED",
+              "DONE",
+              "CANCELLED"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleItemResponseDto"
+            }
+          },
+          "total": {
+            "type": "number"
           }
         }
       }

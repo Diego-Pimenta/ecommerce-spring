@@ -25,7 +25,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cpf\": \"12345678903\",\n    \"name\": \"Novo Usuário\",\n    \"email\": \"novato@example.com\",\n    \"password\": \"segredo1\",\n    \"phone_number\": \"(13)99999-9999\",\n    \"address\": \"Lugar Desconhecido\"\n}",
+							"raw": "{\n    \"cpf\": \"12345678904\",\n    \"name\": \"Novo Usuário\",\n    \"email\": \"novato@example.com\",\n    \"password\": \"segredo1\",\n    \"phone_number\": \"(14)99999-9999\",\n    \"address\": \"Lugar Desconhecido\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,7 +72,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cpf\": \"12345678902\",\n    \"password\": \"password\"\n}",
+							"raw": "{\n    \"cpf\": \"12345678902\",\n    \"password\": \"password1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -105,7 +105,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"old_password\": \"password\",\n    \"new_password\": \"newpassword\"\n}",
+							"raw": "{\n    \"old_password\": \"password1\",\n    \"new_password\": \"newpassword\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -165,6 +165,29 @@
 					"response": []
 				},
 				{
+					"name": "Get-All-Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/products",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get-Product-By-Id",
 					"request": {
 						"method": "GET",
@@ -183,29 +206,6 @@
 								"v1",
 								"products",
 								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get-All-Products",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-gateway}}/v1/products",
-							"host": [
-								"{{api-gateway}}"
-							],
-							"path": [
-								"v1",
-								"products"
 							]
 						}
 					},
@@ -401,7 +401,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"novato2@example.com\",\n    \"password\": \"segredo2\",\n    \"phone_number\": \"(14)99999-9999\",\n    \"address\": \"Lugar Conhecido\"\n}",
+							"raw": "{\n    \"email\": \"novato2@example.com\",\n    \"password\": \"segredo2\",\n    \"phone_number\": \"(71)99999-9999\",\n    \"address\": \"Lugar Conhecido\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -567,7 +567,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"items\": [\n        {\n            \"product_id\": \"2\",\n            \"quantity\": \"1\"\n        },\n        {\n            \"product_id\": \"3\",\n            \"quantity\": \"1\"\n        }\n    ]\n}",
+							"raw": "{\n    \"items\": [\n        {\n            \"product_id\": \"1\",\n            \"quantity\": \"1\"\n        },\n        {\n            \"product_id\": \"2\",\n            \"quantity\": \"3\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -623,14 +623,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-gateway}}/v1/sales/1",
+							"raw": "{{api-gateway}}/v1/sales/3",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"sales",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -657,14 +657,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-gateway}}/v1/sales/1",
+							"raw": "{{api-gateway}}/v1/sales/3",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"sales",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -691,7 +691,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-gateway}}/v1/sales/status/1",
+							"raw": "{{api-gateway}}/v1/sales/status/3",
 							"host": [
 								"{{api-gateway}}"
 							],
@@ -699,7 +699,7 @@
 								"v1",
 								"sales",
 								"status",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -717,14 +717,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-gateway}}/v1/sales/1",
+							"raw": "{{api-gateway}}/v1/sales/3",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"sales",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -766,7 +766,123 @@
 		},
 		{
 			"name": "Report",
-			"item": []
+			"item": [
+				{
+					"name": "Report-By-Date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/reports/user/12345678902/date/2024-08-22",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"reports",
+								"user",
+								"12345678902",
+								"date",
+								"2024-08-22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report-By-Month",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/reports/user/12345678902/month/2024-08",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"reports",
+								"user",
+								"12345678902",
+								"month",
+								"2024-08"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report-By-Current-Week",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/v1/reports/user/12345678902/current-week",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"reports",
+								"user",
+								"12345678902",
+								"current-week"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	]
 }

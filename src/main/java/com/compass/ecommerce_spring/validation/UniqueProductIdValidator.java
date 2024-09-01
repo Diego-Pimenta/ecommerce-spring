@@ -12,11 +12,15 @@ public class UniqueProductIdValidator implements ConstraintValidator<UniqueProdu
     @Override
     public boolean isValid(Set<SaleItemRequestDto> items, ConstraintValidatorContext context) {
         var productIds = new HashSet<Long>();
+
         for (SaleItemRequestDto item : items) {
-            if (!productIds.add(item.productId())) {
+            if (productIds.contains(item.productId())) {
                 return false;
             }
+
+            productIds.add(item.productId());
         }
+
         return true;
     }
 }

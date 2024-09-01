@@ -1,5 +1,6 @@
 package com.compass.ecommerce_spring.service.mapper;
 
+import com.compass.ecommerce_spring.dto.response.ReportResponseDto;
 import com.compass.ecommerce_spring.dto.response.SaleResponseDto;
 import com.compass.ecommerce_spring.entity.Sale;
 import com.compass.ecommerce_spring.entity.SaleItem;
@@ -20,8 +21,12 @@ public interface SaleMapper extends MonetaryOperations {
     })
     Sale createSaleToEntity(User customer);
 
+    @Mapping(target = "items", source = "items")
     Sale updateSaleToEntity(Sale sale, Set<SaleItem> items);
 
     @Mapping(target = "total", expression = "java(calculateTotal(sale))")
     SaleResponseDto toDto(Sale sale);
+
+    @Mapping(target = "total", expression = "java(calculateTotal(sale))")
+    ReportResponseDto toReportDto(Sale sale);
 }

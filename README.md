@@ -8,7 +8,7 @@
 
 [X] Permitir que os usuários criem, leiam, atualizem e excluam vendas (Uma venda tem que ter no mínimo 1 produto para ser concluída). PESO (3)
 
-[] Criar métodos de relatório de vendas por data (informada pelo cliente), por mês e pela semana atual (considerar dias úteis). PESO (1)
+[X] Criar métodos de relatório de vendas por data (informada pelo cliente), por mês e pela semana atual (considerar dias úteis). PESO (1)
 
 [X] Os métodos “GET ALL” de Produtos e Vendas devem salvar as informações no CACHE da aplicação, para que as próximas buscas sejam mais rápidas. Deve ser feito um bom gerenciamento do cache, por exemplo: ao inserir uma nova venda, deletar o cache, para que a informação seja buscada no banco de dados diretamente e venha atualizada. PESO (1)
 

@@ -1,22 +1,28 @@
 POST /v1/products - ADMIN
 GET /v1/products - AUTHENTICATED
-GET /v1/products/? - AUTHENTICATED
-UPDATE /v1/products/? - ADMIN
-PATCH /v1/products/status/? - ADMIN
-DELETE /v1/products/? - ADMIN
+GET /v1/products/1 - AUTHENTICATED
+UPDATE /v1/products/1 - ADMIN
+PATCH /v1/products/status/1 - ADMIN
+DELETE /v1/products/1 - ADMIN
+
+POST /v1/auth/login - PUBLIC
 
 POST /v1/users - PUBLIC
 GET /v1/users - AUTHENTICATED
-GET /v1/users/? - AUTHENTICATED
-UPDATE /v1/users/? - AUTHENTICATED
-PATCH /v1/users/change-password/? - PUBLIC
-PATCH /v1/users/role/? - ADMIN
-PATCH /v1/users/status/? - AUTHENTICATED
-DELETE /v1/users/? - ADMIN
+GET /v1/users/12345678901 - AUTHENTICATED
+UPDATE /v1/users/12345678901 - AUTHENTICATED
+PATCH /v1/users/change-password/12345678901 - PUBLIC
+PATCH /v1/users/role/12345678901 - ADMIN
+PATCH /v1/users/status/12345678901 - AUTHENTICATED
+DELETE /v1/users/12345678901 - ADMIN
 
 POST /v1/sales - AUTHENTICATED
 GET /v1/sales - AUTHENTICATED
-GET /v1/sales/? - AUTHENTICATED
-UPDATE /v1/sales/? - AUTHENTICATED
-PATCH /v1/sales/status/? - AUTHENTICATED
-DELETE /v1/sales/? - ADMIN
+GET /v1/sales/1 - AUTHENTICATED
+UPDATE /v1/sales/1 - AUTHENTICATED
+PATCH /v1/sales/status/1 - AUTHENTICATED
+DELETE /v1/sales/1 - ADMIN
+
+GET /v1/reports/user/12345678901/date/2024-07-28 - AUTHENTICATED
+GET /v1/reports/user/12345678901/month/2024-07 - AUTHENTICATED
+GET /v1/reposts/user/12345678901/current-week - AUTHENTICATED
