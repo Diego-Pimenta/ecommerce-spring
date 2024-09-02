@@ -52,8 +52,7 @@ public class ProductStockServiceImpl implements ProductStockService {
     @Transactional(readOnly = true)
     @Override
     public List<ProductStockResponseDto> findAll() {
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }

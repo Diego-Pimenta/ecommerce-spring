@@ -20,8 +20,7 @@ public class AccessAuthority {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userDetails = (UserDetails) authentication.getPrincipal();
 
-        return userDetails.getAuthorities()
-                .stream()
+        return userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .map(Role::valueOf)
                 .findFirst()

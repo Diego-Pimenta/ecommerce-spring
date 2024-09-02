@@ -59,8 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<UserResponseDto> findAll() {
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }

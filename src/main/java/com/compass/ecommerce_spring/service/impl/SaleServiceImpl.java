@@ -51,10 +51,9 @@ public class SaleServiceImpl implements SaleService {
 
         var sale = saleMapper.createSaleToEntity(user);
 
-        var saleItems = saleRequestDto.items()
-                .stream()
+        var saleItems = saleRequestDto.items().stream()
                 .map(item -> {
-                    var product = productRepository.findByIdAndActive(item.productId(), true)
+                    var product = productRepository.findById(item.productId())
                             .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock or inactive"));
                     return saleItemMapper.toEntity(sale, product, item.quantity());
                 })
@@ -64,8 +63,7 @@ public class SaleServiceImpl implements SaleService {
 
         var createdSale = saleRepository.save(sale);
 
-        var createdSaleItems = saleItems
-                .stream()
+        var createdSaleItems = saleItems.stream()
                 .map(saleItemRepository::save)
                 .collect(Collectors.toSet());
 
@@ -86,8 +84,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional(readOnly = true)
     @Override
     public List<SaleResponseDto> findAll() {
-        return saleRepository.findAll()
-                .stream()
+        return saleRepository.findAll().stream()
                 .map(saleMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -103,10 +100,9 @@ public class SaleServiceImpl implements SaleService {
 
         accessAuthority.checkPermission(sale.getCustomer().getCpf());
 
-        var saleItems = saleRequestDto.items()
-                .stream()
+        var saleItems = saleRequestDto.items().stream()
                 .map(item -> {
-                    var product = productRepository.findByIdAndActive(item.productId(), true)
+                    var product = productRepository.findById(item.productId())
                             .orElseThrow(() -> new ResourceNotFoundException("Product not found in stock or inactive"));
                     return saleItemMapper.toEntity(sale, product, item.quantity());
                 })
@@ -117,8 +113,7 @@ public class SaleServiceImpl implements SaleService {
         saleItemRepository.deleteAll(sale.getItems());
         sale.getItems().clear();
 
-        var updatedSaleItems = saleItems
-                .stream()
+        var updatedSaleItems = saleItems.stream()
                 .map(saleItemRepository::save)
                 .collect(Collectors.toSet());
 
@@ -163,26 +158,26 @@ public class SaleServiceImpl implements SaleService {
         var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
 
-        checkCompletedSale(sale.getStatus());
-
-        // devolve os produtos ao estoque caso tenham sido separados
-        if (sale.getStatus().equals(SaleStatus.PAID) || sale.getStatus().equals(SaleStatus.SHIPPED)) {
+        // devolve os produtos ao estoque caso tenham sido separados e a venda não foi previamente cancelada
+        if (!sale.getStatus().equals(SaleStatus.CANCELLED) &&
+                sale.getStatus().equals(SaleStatus.PAID) ||
+                sale.getStatus().equals(SaleStatus.SHIPPED)) {
             sale.getItems().forEach(item -> addToStock(item.getId().getProduct(), item.getQuantity()));
         }
 
-        sale.setStatus(SaleStatus.CANCELLED);
-        saleRepository.save(sale);
+        saleItemRepository.deleteAll(sale.getItems());
+        saleRepository.delete(sale);
     }
 
     private void validateStock(Set<SaleItem> saleItems) {
-        var insufficientProduct = saleItems
-                .stream()
-                .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity())
-                .findFirst();
+        var insufficientProducts = saleItems.stream()
+                .filter(item -> item.getId().getProduct().getQuantity() < item.getQuantity() ||
+                        !item.getId().getProduct().getActive())
+                .map(item -> item.getId().getProduct().getName())
+                .toList();
 
-        if (insufficientProduct.isPresent()) {
-            var productName = insufficientProduct.get().getId().getProduct().getName();
-            throw new BusinessException("Unavailable quantity of product: " + productName);
+        if (!insufficientProducts.isEmpty()) {
+            throw new BusinessException("Inactive or unavailable quantity of products: " + String.join(", ", insufficientProducts));
         }
     }
 

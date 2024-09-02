@@ -31,8 +31,7 @@ public class JwtUtil {
     }
 
     public String createToken(UserDetails userDetails) {
-        var authority = userDetails.getAuthorities()
-                .stream()
+        var authority = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining());
         var username = userDetails.getUsername();

@@ -30,8 +30,7 @@ public class ReportServiceImpl implements ReportService {
     public List<ReportResponseDto> findByDate(String cpf, LocalDate date) {
         accessAuthority.checkPermission(cpf);
 
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .filter(sale -> sale.getMoment().toLocalDate().isEqual(date))
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
@@ -41,8 +40,7 @@ public class ReportServiceImpl implements ReportService {
     public List<ReportResponseDto> findByMonth(String cpf, YearMonth month) {
         accessAuthority.checkPermission(cpf);
 
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .filter(sale -> YearMonth.from(sale.getMoment()).equals(month))
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
@@ -56,8 +54,7 @@ public class ReportServiceImpl implements ReportService {
         var startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
         var endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY)).atTime(LocalTime.MAX);
 
-        return repository.findByWeekRange(startOfWeek, endOfWeek)
-                .stream()
+        return repository.findByWeekRange(startOfWeek, endOfWeek).stream()
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
     }

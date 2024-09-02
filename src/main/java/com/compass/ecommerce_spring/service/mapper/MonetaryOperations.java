@@ -28,8 +28,7 @@ public interface MonetaryOperations {
     }
 
     default BigDecimal calculateTotal(Sale sale) {
-        return sale.getItems()
-                .stream()
+        return sale.getItems().stream()
                 .map(this::calculateSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

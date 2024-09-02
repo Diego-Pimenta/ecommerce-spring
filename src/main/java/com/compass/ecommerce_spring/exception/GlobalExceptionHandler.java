@@ -68,13 +68,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleException(Exception ex, WebRequest request) {
         var errors = Collections.singletonList(ex.getMessage());
-        ex.printStackTrace();
         return processResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
     }
 
     private List<String> processMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
+        return ex.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.toList());
     }
