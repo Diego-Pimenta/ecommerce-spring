@@ -1,12 +1,11 @@
 services:
   redis:
-    image: redis:latest
+    image: redis:7.4-alpine
     container_name: redis
     restart: always
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASS}
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=redispass
     volumes:
       - cache:/data
     networks:
@@ -19,10 +18,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=ecommerce_spring
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
@@ -35,14 +34,8 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASS=redispass
-      - MYSQL_HOST=mysqldb
-      - MYSQL_PORT=3306
-      - JWT_SECRET_KEY=5be7c41496c7cb2030b84e63a190d47f6e409a5addaf0d449bf77dc1fc0c6f9c
-      - JWT_EXPIRATION_TIME=3600000
+    env_file:
+      - .env
     depends_on:
       - redis
       - mysqldb
