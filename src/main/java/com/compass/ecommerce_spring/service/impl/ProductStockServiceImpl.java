@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,10 @@ public class ProductStockServiceImpl implements ProductStockService {
                 .collect(Collectors.toList());
     }
 
-    @CachePut(value = "products", key = "#id")
+    @Caching(
+            evict = @CacheEvict(value = "sales", allEntries = true),
+            put = @CachePut(value = "products", key = "#id")
+    )
     @Override
     public ProductStockResponseDto update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto) {
         var existingProduct = repository.findById(id)
@@ -74,7 +78,10 @@ public class ProductStockServiceImpl implements ProductStockService {
         return mapper.toDto(updatedProductStock);
     }
 
-    @CachePut(value = "products", key = "#id")
+    @Caching(
+            evict = @CacheEvict(value = "sales", allEntries = true),
+            put = @CachePut(value = "products", key = "#id")
+    )
     @Override
     public ProductStockResponseDto updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto) {
         var product = repository.findById(id)
@@ -85,7 +92,7 @@ public class ProductStockServiceImpl implements ProductStockService {
         return mapper.toDto(updatedProduct);
     }
 
-    @CacheEvict(value = "products", allEntries = true)
+    @CacheEvict(value = {"products", "sales"}, allEntries = true)
     @Override
     public void delete(Long id) {
         var product = repository.findById(id)

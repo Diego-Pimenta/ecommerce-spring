@@ -13,6 +13,7 @@ import com.compass.ecommerce_spring.service.UserService;
 import com.compass.ecommerce_spring.service.mapper.UserMapper;
 import com.compass.ecommerce_spring.security.AccessAuthority;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = "sales", allEntries = true)
     @Override
     public UserResponseDto update(String cpf, UpdateUserRequestDto updateUserRequestDto) {
         var existingUser = repository.findByCpf(cpf)
@@ -83,6 +85,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(updatedUser);
     }
 
+    @CacheEvict(value = "sales", allEntries = true)
     @Override
     public UserResponseDto updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto) {
         var user = repository.findByCpf(cpf)
@@ -97,6 +100,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(updateUser);
     }
 
+    @CacheEvict(value = "sales", allEntries = true)
     @Override
     public UserResponseDto updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto) {
         var user = repository.findByCpf(cpf)
@@ -107,6 +111,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(updateUser);
     }
 
+    @CacheEvict(value = "sales", allEntries = true)
     @Override
     public UserResponseDto updateStatus(String cpf, UpdateActiveStatusRequestDto updateActiveStatusRequestDto) {
         var user = repository.findByCpf(cpf)
@@ -119,6 +124,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(updateUser);
     }
 
+    @CacheEvict(value = "sales", allEntries = true)
     @Override
     public void delete(String cpf) {
         var user = repository.findByCpf(cpf)
