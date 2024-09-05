@@ -11,7 +11,6 @@ import java.util.List;
 public class ProductConstants {
 
     public static final ProductStock PRODUCT = new ProductStock(2L, "Cigarettes", 13, new BigDecimal("3.99"), "Drugs", true, new HashSet<>());
-
     public static final List<ProductStock> PRODUCTS = new ArrayList<>() {
         {
             add(PRODUCT);
@@ -19,7 +18,6 @@ public class ProductConstants {
     };
 
     public static final ProductStockResponseDto PRODUCT_RESPONSE_DTO = new ProductStockResponseDto(2L, "Cigarettes", 13, new BigDecimal("3.99"), "Drugs", true);
-
     public static final List<ProductStockResponseDto> PRODUCTS_RESPONSE_DTO = new ArrayList<>() {
         {
             add(PRODUCT_RESPONSE_DTO);
