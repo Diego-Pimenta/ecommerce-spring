@@ -2,6 +2,7 @@ package com.compass.ecommerce_spring.security;
 
 import com.compass.ecommerce_spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
-        var user = repository.findByCpfAndActive(cpf, true)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found or inactive"));
+        var user = repository.findByCpf(cpf)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!user.getActive()) {
+            throw new DisabledException("Inactive user");
+        }
 
         var grantedAuthorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
 

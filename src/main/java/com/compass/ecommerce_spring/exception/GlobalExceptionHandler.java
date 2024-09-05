@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,7 +42,7 @@ public class GlobalExceptionHandler {
         return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
-    @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class})
+    @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class, DisabledException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
         var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.FORBIDDEN, errors, request);
