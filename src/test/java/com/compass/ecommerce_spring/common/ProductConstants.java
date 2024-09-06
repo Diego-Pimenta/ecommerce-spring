@@ -1,5 +1,8 @@
 package com.compass.ecommerce_spring.common;
 
+import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
 import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.entity.ProductStock;
 
@@ -16,6 +19,10 @@ public class ProductConstants {
             add(PRODUCT);
         }
     };
+
+    public static final CreateProductStockRequestDto CREATE_PRODUCT_REQUEST_DTO = new CreateProductStockRequestDto("Cigarettes", 13, new BigDecimal("3.99"), "Drugs");
+    public static final UpdateProductStockRequestDto UPDATE_PRODUCT_REQUEST_DTO = new UpdateProductStockRequestDto("Cigarettes", 7, new BigDecimal("4.99"), "Drugs", true);
+    public static final UpdateActiveStatusRequestDto UPDATE_ACTIVE_STATUS_REQUEST_DTO = new UpdateActiveStatusRequestDto(true);
 
     public static final ProductStockResponseDto PRODUCT_RESPONSE_DTO = new ProductStockResponseDto(2L, "Cigarettes", 13, new BigDecimal("3.99"), "Drugs", true);
     public static final List<ProductStockResponseDto> PRODUCTS_RESPONSE_DTO = new ArrayList<>() {

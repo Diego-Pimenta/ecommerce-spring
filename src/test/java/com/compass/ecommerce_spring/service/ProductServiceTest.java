@@ -1,27 +1,28 @@
 package com.compass.ecommerce_spring.service;
 
-import com.compass.ecommerce_spring.dto.request.CreateProductStockRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateProductStockRequestDto;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.ProductStockRepository;
 import com.compass.ecommerce_spring.service.impl.ProductStockServiceImpl;
 import com.compass.ecommerce_spring.service.mapper.ProductStockMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
+import static com.compass.ecommerce_spring.common.ProductConstants.CREATE_PRODUCT_REQUEST_DTO;
 import static com.compass.ecommerce_spring.common.ProductConstants.PRODUCT;
 import static com.compass.ecommerce_spring.common.ProductConstants.PRODUCTS;
 import static com.compass.ecommerce_spring.common.ProductConstants.PRODUCTS_RESPONSE_DTO;
 import static com.compass.ecommerce_spring.common.ProductConstants.PRODUCT_RESPONSE_DTO;
+import static com.compass.ecommerce_spring.common.ProductConstants.UPDATE_ACTIVE_STATUS_REQUEST_DTO;
+import static com.compass.ecommerce_spring.common.ProductConstants.UPDATE_PRODUCT_REQUEST_DTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,34 +39,23 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductStockServiceImpl service;
 
-    private CreateProductStockRequestDto createProductStockRequestDto;
-    private UpdateProductStockRequestDto updateProductStockRequestDto;
-    private UpdateActiveStatusRequestDto updateActiveStatusRequestDto;
-
-    @BeforeEach
-    public void setup() {
-        createProductStockRequestDto = new CreateProductStockRequestDto("Cigarettes", 13, new BigDecimal("3.99"), "Drugs");
-        updateProductStockRequestDto = new UpdateProductStockRequestDto("Cigarettes", 7, new BigDecimal("4.99"), "Drugs", true);
-        updateActiveStatusRequestDto = new UpdateActiveStatusRequestDto(true);
-    }
-
     @Test
     public void saveProduct_WithValidData_ReturnsProductResponseDto() {
-        when(repository.existsByName(createProductStockRequestDto.name())).thenReturn(false);
-        when(mapper.createProductStockToEntity(createProductStockRequestDto)).thenReturn(PRODUCT);
+        when(repository.existsByName(CREATE_PRODUCT_REQUEST_DTO.name())).thenReturn(false);
+        when(mapper.createProductStockToEntity(CREATE_PRODUCT_REQUEST_DTO)).thenReturn(PRODUCT);
         when(repository.save(any())).thenReturn(PRODUCT);
         when(mapper.toDto(any())).thenReturn(PRODUCT_RESPONSE_DTO);
 
-        var sut = service.save(createProductStockRequestDto);
+        var sut = service.save(CREATE_PRODUCT_REQUEST_DTO);
 
         assertThat(sut).isEqualTo(PRODUCT_RESPONSE_DTO);
     }
 
     @Test
     public void saveProduct_WithExistingName_ThrowsException() {
-        when(repository.existsByName(createProductStockRequestDto.name())).thenReturn(true);
+        when(repository.existsByName(CREATE_PRODUCT_REQUEST_DTO.name())).thenReturn(true);
 
-        assertThatThrownBy(() -> service.save(createProductStockRequestDto)).isInstanceOf(ResourceAlreadyExistsException.class);
+        assertThatThrownBy(() -> service.save(CREATE_PRODUCT_REQUEST_DTO)).isInstanceOf(ResourceAlreadyExistsException.class);
     }
 
     @Test
@@ -88,10 +78,18 @@ public class ProductServiceTest {
 
     @Test
     public void getAllProducts_ReturnsListOfProductResponseDto() {
-        when(repository.findAll()).thenReturn(PRODUCTS);
+        var page = 0;
+        var size = 10;
+        var orderBy = "name";
+        var direction = "ASC";
+
+        var pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction), orderBy);
+        var productPage = new PageImpl<>(PRODUCTS, pageRequest, PRODUCTS.size());
+
+        when(repository.findAll(pageRequest)).thenReturn(productPage);
         when(mapper.toDto(any())).thenReturn(PRODUCT_RESPONSE_DTO);
 
-        var sut = service.findAll();
+        var sut = service.findAll(page, size, orderBy, direction);
 
         assertThat(sut).isNotEmpty();
         assertThat(sut).hasSize(1);
@@ -101,12 +99,12 @@ public class ProductServiceTest {
     @Test
     public void updateProduct_WithExistingId_ReturnsProductResponseDto() {
         when(repository.findById(1L)).thenReturn(Optional.of(PRODUCT));
-        when(repository.findByName(updateProductStockRequestDto.name())).thenReturn(Optional.empty());
+        when(repository.findByName(UPDATE_PRODUCT_REQUEST_DTO.name())).thenReturn(Optional.empty());
         when(mapper.updateProductStockToEntity(any(), any())).thenReturn(PRODUCT);
         when(repository.save(any())).thenReturn(PRODUCT);
         when(mapper.toDto(any())).thenReturn(PRODUCT_RESPONSE_DTO);
 
-        var sut = service.update(1L, updateProductStockRequestDto);
+        var sut = service.update(1L, UPDATE_PRODUCT_REQUEST_DTO);
 
         assertThat(sut).isEqualTo(PRODUCT_RESPONSE_DTO);
     }
@@ -115,15 +113,15 @@ public class ProductServiceTest {
     public void updateProduct_WithNonexistentId_ThrowsException() {
         when(repository.findById(0L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.update(0L, updateProductStockRequestDto)).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> service.update(0L, UPDATE_PRODUCT_REQUEST_DTO)).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
     public void updateProduct_WithExistingName_ThrowsException() {
         when(repository.findById(1L)).thenReturn(Optional.of(PRODUCT));
-        when(repository.findByName(updateProductStockRequestDto.name())).thenReturn(Optional.of(PRODUCT));
+        when(repository.findByName(UPDATE_PRODUCT_REQUEST_DTO.name())).thenReturn(Optional.of(PRODUCT));
 
-        assertThatThrownBy(() -> service.update(1L, updateProductStockRequestDto)).isInstanceOf(ResourceAlreadyExistsException.class);
+        assertThatThrownBy(() -> service.update(1L, UPDATE_PRODUCT_REQUEST_DTO)).isInstanceOf(ResourceAlreadyExistsException.class);
     }
 
     @Test
@@ -132,7 +130,7 @@ public class ProductServiceTest {
         when(repository.save(any())).thenReturn(PRODUCT);
         when(mapper.toDto(any())).thenReturn(PRODUCT_RESPONSE_DTO);
 
-        var sut = service.updateStatus(1L, updateActiveStatusRequestDto);
+        var sut = service.updateStatus(1L, UPDATE_ACTIVE_STATUS_REQUEST_DTO);
 
         assertThat(sut).isEqualTo(PRODUCT_RESPONSE_DTO);
     }
@@ -141,7 +139,7 @@ public class ProductServiceTest {
     public void updateProductStatus_WithNonexistentId_ThrowsException() {
         when(repository.findById(0L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.updateStatus(0L, updateActiveStatusRequestDto)).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> service.updateStatus(0L, UPDATE_ACTIVE_STATUS_REQUEST_DTO)).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
