@@ -29,7 +29,7 @@ services:
       - ecommerce
 
   backend:
-    image: diegopimenta/ecommerce-spring:latest
+    image: diegopimenta/ecommerce-spring:v1.1
     container_name: backend
     restart: always
     ports:
