@@ -13,7 +13,7 @@ public interface ProductStockService {
 
     ProductStockResponseDto findById(Long id);
 
-    List<ProductStockResponseDto> findAll();
+    List<ProductStockResponseDto> findAll(Integer page, Integer size, String orderBy, String direction);
 
     ProductStockResponseDto update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
 

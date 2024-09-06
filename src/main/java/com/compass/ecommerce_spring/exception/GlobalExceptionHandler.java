@@ -6,6 +6,7 @@ import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,7 +30,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, BusinessException.class, HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            BusinessException.class,
+            HttpMessageNotReadableException.class,
+            MethodArgumentTypeMismatchException.class,
+            PropertyReferenceException.class,
+            IllegalArgumentException.class})
     public ResponseEntity<StandardError> handleBadRequestException(Exception ex, WebRequest request) {
         var errors = new ArrayList<String>();
 
@@ -42,7 +48,11 @@ public class GlobalExceptionHandler {
         return processResponseEntity(HttpStatus.BAD_REQUEST, errors, request);
     }
 
-    @ExceptionHandler({AccessDeniedException.class, ExpiredJwtException.class, MalformedJwtException.class, SignatureException.class, DisabledException.class})
+    @ExceptionHandler({AccessDeniedException.class,
+            ExpiredJwtException.class,
+            MalformedJwtException.class,
+            SignatureException.class,
+            DisabledException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
         var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.FORBIDDEN, errors, request);

@@ -724,8 +724,48 @@
           "Get"
         ],
         "summary": "Retrieve all sales",
-        "description": "Get all sale objects",
+        "description": "Get all sale objects with pagination",
         "operationId": "findAll_1",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 5
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "moment"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "DESC"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "All sales successfully retrieved",
@@ -828,8 +868,48 @@
           "Product Stock"
         ],
         "summary": "Retrieve all products in stocks",
-        "description": "Get all product objects",
+        "description": "Get all product objects with pagination",
         "operationId": "findAll_2",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "name"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "ASC"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "All products successfully retrieved from stock",
@@ -1743,7 +1823,6 @@
         "type": "object",
         "properties": {
           "items": {
-            "uniqueItems": true,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SaleItemRequestDto"

@@ -48,7 +48,7 @@ public interface ProductStockController {
     ResponseEntity<ProductStockResponseDto> findById(Long id);
 
     @Operation(summary = "Retrieve all products in stocks",
-            description = "Get all product objects",
+            description = "Get all product objects with pagination",
             security = @SecurityRequirement(name = "security"),
             tags = "Get",
             responses = {
@@ -57,7 +57,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<List<ProductStockResponseDto>> findAll();
+    ResponseEntity<List<ProductStockResponseDto>> findAll(Integer page, Integer size, String orderBy, String direction);
 
     @Operation(summary = "Update a product in stock by id",
             description = "Modify a product object with body content by its id",

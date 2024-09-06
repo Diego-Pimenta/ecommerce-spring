@@ -47,7 +47,7 @@ public interface SaleController {
     ResponseEntity<SaleResponseDto> findById(Long id);
 
     @Operation(summary = "Retrieve all sales",
-            description = "Get all sale objects",
+            description = "Get all sale objects with pagination",
             security = @SecurityRequirement(name = "security"),
             tags = "Get",
             responses = {
@@ -56,7 +56,7 @@ public interface SaleController {
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<List<SaleResponseDto>> findAll();
+    ResponseEntity<List<SaleResponseDto>> findAll(Integer page, Integer size, String orderBy, String direction);
 
     @Operation(summary = "Update a sale by id",
             description = "Modify a sale object with body content by its id",

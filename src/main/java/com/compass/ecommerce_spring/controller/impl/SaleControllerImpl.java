@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -46,8 +47,13 @@ public class SaleControllerImpl implements SaleController {
 
     @GetMapping
     @Override
-    public ResponseEntity<List<SaleResponseDto>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<SaleResponseDto>> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size,
+            @RequestParam(value = "orderBy", defaultValue = "moment") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction
+    ) {
+        return ResponseEntity.ok(service.findAll(page, size, orderBy, direction));
     }
 
     @PutMapping("/{id}")

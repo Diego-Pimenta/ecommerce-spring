@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -47,8 +48,13 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @GetMapping
     @Override
-    public ResponseEntity<List<ProductStockResponseDto>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<ProductStockResponseDto>> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction
+    ) {
+        return ResponseEntity.ok(service.findAll(page, size, orderBy, direction));
     }
 
     @PutMapping("/{id}")

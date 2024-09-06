@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,8 +85,10 @@ public class SaleServiceImpl implements SaleService {
     @Cacheable(value = "sales")
     @Transactional(readOnly = true)
     @Override
-    public List<SaleResponseDto> findAll() {
-        return saleRepository.findAll().stream()
+    public List<SaleResponseDto> findAll(Integer page, Integer size, String orderBy, String direction) {
+        var pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction), orderBy);
+
+        return saleRepository.findAll(pageRequest).stream()
                 .map(saleMapper::toDto)
                 .collect(Collectors.toList());
     }

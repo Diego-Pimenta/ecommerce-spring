@@ -10,16 +10,20 @@ import com.compass.ecommerce_spring.repository.ProductStockRepository;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import com.compass.ecommerce_spring.service.mapper.ProductStockMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -52,8 +56,10 @@ public class ProductStockServiceImpl implements ProductStockService {
     @Cacheable(value = "products")
     @Transactional(readOnly = true)
     @Override
-    public List<ProductStockResponseDto> findAll() {
-        return repository.findAll().stream()
+    public List<ProductStockResponseDto> findAll(Integer page, Integer size, String orderBy, String direction) {
+        var pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction), orderBy);
+
+        return repository.findAll(pageRequest).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }

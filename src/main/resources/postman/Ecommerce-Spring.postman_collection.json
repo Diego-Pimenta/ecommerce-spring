@@ -72,7 +72,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cpf\": \"12345678902\",\n    \"password\": \"password1\"\n}",
+							"raw": "{\n    \"cpf\": \"12345678901\",\n    \"password\": \"adminpass\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -175,13 +175,31 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-gateway}}/v1/products",
+							"raw": "{{api-gateway}}/v1/products?page=0&size=10&orderBy=name&direction=ASC",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "orderBy",
+									"value": "name"
+								},
+								{
+									"key": "direction",
+									"value": "ASC"
+								}
 							]
 						}
 					},
@@ -599,13 +617,31 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-gateway}}/v1/sales",
+							"raw": "{{api-gateway}}/v1/sales?page=0&size=5&orderBy=moment&direction=DESC",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
 								"sales"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "orderBy",
+									"value": "moment"
+								},
+								{
+									"key": "direction",
+									"value": "DESC"
+								}
 							]
 						}
 					},

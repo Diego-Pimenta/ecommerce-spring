@@ -12,7 +12,7 @@ public interface SaleService {
 
     SaleResponseDto findById(Long id);
 
-    List<SaleResponseDto> findAll();
+    List<SaleResponseDto> findAll(Integer page, Integer size, String orderBy, String direction);
 
     SaleResponseDto update(Long id, SaleRequestDto saleRequestDto);
 
