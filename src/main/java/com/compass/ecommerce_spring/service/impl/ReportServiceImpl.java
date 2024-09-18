@@ -32,6 +32,7 @@ public class ReportServiceImpl implements ReportService {
 
         return repository.findAll().stream()
                 .filter(sale -> sale.getMoment().toLocalDate().isEqual(date))
+                .filter(sale -> sale.getCustomer().getCpf().equals(cpf))
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
     }
@@ -42,6 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
         return repository.findAll().stream()
                 .filter(sale -> YearMonth.from(sale.getMoment()).equals(month))
+                .filter(sale -> sale.getCustomer().getCpf().equals(cpf))
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
     }
@@ -55,6 +57,7 @@ public class ReportServiceImpl implements ReportService {
         var endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY)).atTime(LocalTime.MAX);
 
         return repository.findByWeekRange(startOfWeek, endOfWeek).stream()
+                .filter(sale -> sale.getCustomer().getCpf().equals(cpf))
                 .map(mapper::toReportDto)
                 .collect(Collectors.toList());
     }

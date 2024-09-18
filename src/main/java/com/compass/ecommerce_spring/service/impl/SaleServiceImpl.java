@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -125,7 +126,10 @@ public class SaleServiceImpl implements SaleService {
         return saleMapper.toDto(updatedSale);
     }
 
-    @CachePut(value = "sales", key = "#id")
+    @Caching(
+            put = @CachePut(value = "sales", key = "#id"),
+            evict = @CacheEvict(value = "products", allEntries = true)
+    )
     @Override
     public SaleResponseDto updateStatus(Long id, UpdateSaleStatusRequestDto updateSaleStatusRequestDto) {
         var sale = saleRepository.findById(id)
@@ -156,7 +160,7 @@ public class SaleServiceImpl implements SaleService {
         return saleMapper.toDto(updatedSale);
     }
 
-    @CacheEvict(value = "sales", allEntries = true)
+    @CacheEvict(value = {"sales", "products"}, allEntries = true)
     @Override
     public void delete(Long id) {
         var sale = saleRepository.findById(id)
