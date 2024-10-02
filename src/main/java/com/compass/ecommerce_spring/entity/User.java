@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class User {
     private String cpf;
     @Column(nullable = false, length = 80)
     private String name;
+    @NaturalId(mutable = true)
     @Column(nullable = false, unique = true, length = 100)
     private String email;
     @Column(nullable = false, length = 200)

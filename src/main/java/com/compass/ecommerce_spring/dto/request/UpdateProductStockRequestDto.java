@@ -10,21 +10,16 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record UpdateProductStockRequestDto(
-        @NotBlank(message = "Invalid name: Name must not be blank")
         @Size(max = 80, message = "Invalid name: Name must not be longer than 50 characters")
         String name,
-        @NotNull(message = "Invalid quantity: Quantity must not be null")
         @Min(value = 0, message = "Invalid quantity: Quantity must be a positive number")
         Integer quantity,
-        @NotNull(message = "Invalid unit price: Unit price must not be null")
         @Min(value = 0, message = "Invalid unit price: Unit price must be a positive number")
         @Max(value = 999999, message = "Invalid unit price: Unit price must not be greater than 999.999")
         @JsonProperty(value = "unit_price")
         BigDecimal unitPrice,
-        @NotBlank(message = "Invalid category: Category must not be blank")
         @Size(max = 30, message = "Invalid category: Category must not be longer than 50 characters")
         String category,
-        @NotNull(message = "Invalid active: Active must be true or false")
         Boolean active
 ) {
 }

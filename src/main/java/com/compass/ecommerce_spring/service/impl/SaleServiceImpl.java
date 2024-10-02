@@ -173,7 +173,6 @@ public class SaleServiceImpl implements SaleService {
             sale.getItems().forEach(item -> addToStock(item.getId().getProduct(), item.getQuantity()));
         }
 
-        saleItemRepository.deleteAll(sale.getItems());
         saleRepository.delete(sale);
     }
 

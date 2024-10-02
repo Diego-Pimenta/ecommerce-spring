@@ -8,8 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.util.StringUtils;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", imports = StringUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     @Mapping(target = "role", expression = "java(Role.CLIENT)")
@@ -17,10 +18,10 @@ public interface UserMapper {
     User createUserToEntity(CreateUserRequestDto createUserRequestDto);
 
     @Mappings({
-            @Mapping(target = "email", expression = "java(updateUserRequestDto.email())"),
-            @Mapping(target = "password", expression = "java(updateUserRequestDto.password())"),
-            @Mapping(target = "phoneNumber", expression = "java(updateUserRequestDto.phoneNumber())"),
-            @Mapping(target = "address", expression = "java(updateUserRequestDto.address())"),
+            @Mapping(target = "email", expression = "java(StringUtils.hasText(updateUserRequestDto.email()) ? updateUserRequestDto.email() : user.getEmail())"),
+            @Mapping(target = "password", expression = "java(StringUtils.hasText(updateUserRequestDto.password()) ? updateUserRequestDto.password() : user.getPassword())"),
+            @Mapping(target = "phoneNumber", expression = "java(StringUtils.hasText(updateUserRequestDto.phoneNumber()) ? updateUserRequestDto.phoneNumber() : user.getPhoneNumber())"),
+            @Mapping(target = "address", expression = "java(StringUtils.hasText(updateUserRequestDto.address()) ? updateUserRequestDto.address() : user.getAddress())"),
     })
     User updateUserToEntity(User user, UpdateUserRequestDto updateUserRequestDto);
 

@@ -13,7 +13,8 @@ public record CreateUserRequestDto(
         @NotBlank(message = "Invalid name: Name must not be blank")
         @Size(max = 80, message = "Invalid name: Name must not be longer than 80 characters")
         String name,
-        @Email(message = "Invalid email")
+        @NotBlank(message = "Invalid email: Email must not be blank")
+        @Email(message = "Invalid email: Email pattern does not match")
         String email,
         @NotBlank(message = "Invalid password: Password must not be blank")
         @Size(min = 8, max = 20, message = "Invalid password: Password must be between 8 and 20 characters")

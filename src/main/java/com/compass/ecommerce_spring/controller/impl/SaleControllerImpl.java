@@ -33,9 +33,11 @@ public class SaleControllerImpl implements SaleController {
     @PostMapping
     @Override
     public ResponseEntity<SaleResponseDto> save(@RequestBody @Valid SaleRequestDto saleRequestDto) {
-        SaleResponseDto saleResponseDto = service.save(saleRequestDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        var saleResponseDto = service.save(saleRequestDto);
+
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(saleResponseDto.id()).toUri();
+
         return ResponseEntity.created(uri).body(saleResponseDto);
     }
 

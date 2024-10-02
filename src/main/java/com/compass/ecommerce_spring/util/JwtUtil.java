@@ -1,10 +1,11 @@
 package com.compass.ecommerce_spring.util;
 
-import com.compass.ecommerce_spring.security.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,12 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    private final JwtProperties jwtProperties;
+    @Value("${security.jwt.secret-key}")
+    private String secretKey;
+
+    @Getter
+    @Value("${security.jwt.expiration-time}")
+    private long expirationTime;
 
     public String getUsername(String token) {
         return Jwts
@@ -48,23 +54,19 @@ public class JwtUtil {
                 .compact();
     }
 
-    public long getExpirationTime() {
-        return jwtProperties.expirationTime();
-    }
-
     public boolean isTokenValid(String token) {
-        return !Jwts
+        return Jwts
                 .parser()
                 .verifyWith((SecretKey) getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getExpiration()
-                .before(new Date());
+                .after(new Date());
     }
 
     private Key getSecretKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secretKey());
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
