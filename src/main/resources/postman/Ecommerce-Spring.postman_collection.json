@@ -94,9 +94,9 @@
 					"response": []
 				},
 				{
-					"name": "Update-User-Password-By-Cpf",
+					"name": "Reset-Password",
 					"request": {
-						"method": "PATCH",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Accept",
@@ -105,7 +105,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"old_password\": \"password1\",\n    \"new_password\": \"newpassword\"\n}",
+							"raw": "{\n    \"email\": \"davidb@example.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -113,15 +113,54 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-gateway}}/v1/users/change-password/12345678902",
+							"raw": "{{api-gateway}}/v1/auth/reset-password",
 							"host": [
 								"{{api-gateway}}"
 							],
 							"path": [
 								"v1",
-								"users",
-								"change-password",
-								"12345678902"
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm-Reset-Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"new_password\": \"novasenha\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-gateway}}/v1/auth/reset-password/confirm?token=",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"reset-password",
+								"confirm"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": ""
+								}
 							]
 						}
 					},

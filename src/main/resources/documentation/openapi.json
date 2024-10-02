@@ -1005,6 +1005,98 @@
         ]
       }
     },
+    "/v1/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Post",
+          "Authentication"
+        ],
+        "summary": "Request reset token",
+        "description": "Generates and sends a reset token to the user's email",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Password reset successfully requested"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/reset-password/confirm": {
+      "post": {
+        "tags": [
+          "Post",
+          "Authentication"
+        ],
+        "summary": "Confirm password reset",
+        "description": "Modify an user object with body content using reset token",
+        "operationId": "updatePassword",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPasswordResetRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "User password successfully updated"
+          },
+          "403": {
+            "description": "Reset token is expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reset token not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/auth/login": {
       "post": {
         "tags": [
@@ -1222,79 +1314,6 @@
             "security": []
           }
         ]
-      }
-    },
-    "/v1/users/change-password/{cpf}": {
-      "patch": {
-        "tags": [
-          "User",
-          "Patch"
-        ],
-        "summary": "Update an user password by cpf",
-        "description": "Modify an user object with body content by its cpf",
-        "operationId": "updatePassword",
-        "parameters": [
-          {
-            "name": "cpf",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserPasswordRequestDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "User successfully updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid operation with data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StandardError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User credentials don't match",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StandardError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StandardError"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/v1/sales/status/{id}": {
@@ -1935,6 +1954,27 @@
           }
         }
       },
+      "PasswordResetRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ConfirmPasswordResetRequestDto": {
+        "required": [
+          "new_password"
+        ],
+        "type": "object",
+        "properties": {
+          "new_password": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          }
+        }
+      },
       "AuthenticationResponseDto": {
         "type": "object",
         "properties": {
@@ -1989,25 +2029,6 @@
               "CLIENT",
               "ADMIN"
             ]
-          }
-        }
-      },
-      "UpdateUserPasswordRequestDto": {
-        "required": [
-          "new_password",
-          "old_password"
-        ],
-        "type": "object",
-        "properties": {
-          "old_password": {
-            "maxLength": 20,
-            "minLength": 8,
-            "type": "string"
-          },
-          "new_password": {
-            "maxLength": 20,
-            "minLength": 8,
-            "type": "string"
           }
         }
       },
