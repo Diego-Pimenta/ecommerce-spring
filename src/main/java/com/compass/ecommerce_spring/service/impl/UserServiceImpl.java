@@ -2,20 +2,18 @@ package com.compass.ecommerce_spring.service.impl;
 
 import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.UserRepository;
+import com.compass.ecommerce_spring.security.AccessAuthority;
 import com.compass.ecommerce_spring.service.UserService;
 import com.compass.ecommerce_spring.service.mapper.UserMapper;
-import com.compass.ecommerce_spring.security.AccessAuthority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,24 +78,13 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = mapper.updateUserToEntity(existingUser, updateUserRequestDto);
-        user.setPassword(passwordEncoder.encode(updateUserRequestDto.password()));
-        var updatedUser = repository.save(user);
-        return mapper.toDto(updatedUser);
-    }
 
-    @CacheEvict(value = "sales", allEntries = true)
-    @Override
-    public UserResponseDto updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto) {
-        var user = repository.findByCpf(cpf)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (!passwordEncoder.matches(updateUserPasswordRequestDto.oldPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Old password don't match");
+        if (updateUserRequestDto.password() != null) {
+            user.setPassword(passwordEncoder.encode(updateUserRequestDto.password()));
         }
 
-        user.setPassword(passwordEncoder.encode(updateUserPasswordRequestDto.newPassword()));
-        var updateUser = repository.save(user);
-        return mapper.toDto(updateUser);
+        var updatedUser = repository.save(user);
+        return mapper.toDto(updatedUser);
     }
 
     @CacheEvict(value = "sales", allEntries = true)

@@ -1,7 +1,7 @@
 package com.compass.ecommerce_spring.service;
 
 import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
+import com.compass.ecommerce_spring.dto.request.PasswordResetRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
@@ -18,8 +18,6 @@ public interface UserService {
     List<UserResponseDto> findAll();
 
     UserResponseDto update(String cpf, UpdateUserRequestDto updateUserRequestDto);
-
-    UserResponseDto updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto);
 
     UserResponseDto updateRole(String cpf, UpdateUserRoleRequestDto updateUserRoleRequestDto);
 

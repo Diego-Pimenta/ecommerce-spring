@@ -1,10 +1,9 @@
 package com.compass.ecommerce_spring.controller;
 
 import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.exception.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,21 +74,6 @@ public interface UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
     ResponseEntity<UserResponseDto> update(String cpf, UpdateUserRequestDto updateUserRequestDto);
-
-    @Operation(summary = "Update an user password by cpf",
-            description = "Modify an user object with body content by its cpf",
-            tags = "Patch",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "User successfully updated",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid operation with data",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "401", description = "User credentials don't match",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-                    @ApiResponse(responseCode = "404", description = "User not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
-            })
-    ResponseEntity<UserResponseDto> updatePassword(String cpf, UpdateUserPasswordRequestDto updateUserPasswordRequestDto);
 
     @Operation(summary = "Update an user role by cpf",
             description = "Modify an user object with body content by its cpf",

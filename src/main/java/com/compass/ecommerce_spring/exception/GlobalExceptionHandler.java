@@ -1,6 +1,7 @@
 package com.compass.ecommerce_spring.exception;
 
 import com.compass.ecommerce_spring.exception.custom.BusinessException;
+import com.compass.ecommerce_spring.exception.custom.InvalidTokenException;
 import com.compass.ecommerce_spring.exception.custom.ResourceAlreadyExistsException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -52,7 +53,8 @@ public class GlobalExceptionHandler {
             ExpiredJwtException.class,
             MalformedJwtException.class,
             SignatureException.class,
-            DisabledException.class})
+            DisabledException.class,
+            InvalidTokenException.class})
     public ResponseEntity<StandardError> handleSecurityException(Exception ex, WebRequest request) {
         var errors = Collections.singletonList(ex.getMessage());
         return processResponseEntity(HttpStatus.FORBIDDEN, errors, request);

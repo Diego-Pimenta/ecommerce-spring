@@ -2,10 +2,9 @@ package com.compass.ecommerce_spring.controller.impl;
 
 import com.compass.ecommerce_spring.controller.UserController;
 import com.compass.ecommerce_spring.dto.request.CreateUserRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateUserPasswordRequestDto;
+import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRequestDto;
 import com.compass.ecommerce_spring.dto.request.UpdateUserRoleRequestDto;
-import com.compass.ecommerce_spring.dto.request.UpdateActiveStatusRequestDto;
 import com.compass.ecommerce_spring.dto.response.UserResponseDto;
 import com.compass.ecommerce_spring.service.UserService;
 import jakarta.validation.Valid;
@@ -35,9 +34,11 @@ public class UserControllerImpl implements UserController {
     @PostMapping
     @Override
     public ResponseEntity<UserResponseDto> save(@RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
-        UserResponseDto userResponseDto = service.save(createUserRequestDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{cpf}")
+        var userResponseDto = service.save(createUserRequestDto);
+
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{cpf}")
                 .buildAndExpand(userResponseDto.cpf()).toUri();
+
         return ResponseEntity.created(uri).body(userResponseDto);
     }
 
@@ -60,15 +61,6 @@ public class UserControllerImpl implements UserController {
             @RequestBody @Valid UpdateUserRequestDto updateUserRequestDto
     ) {
         return ResponseEntity.ok(service.update(cpf, updateUserRequestDto));
-    }
-
-    @PatchMapping("/change-password/{cpf}")
-    @Override
-    public ResponseEntity<UserResponseDto> updatePassword(
-            @PathVariable("cpf") String cpf,
-            @RequestBody @Valid UpdateUserPasswordRequestDto updateUserPasswordRequestDto
-    ) {
-        return ResponseEntity.ok(service.updatePassword(cpf, updateUserPasswordRequestDto));
     }
 
     @PatchMapping("/role/{cpf}")
