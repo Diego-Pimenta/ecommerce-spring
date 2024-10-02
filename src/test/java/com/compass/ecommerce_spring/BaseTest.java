@@ -1,7 +1,6 @@
 package com.compass.ecommerce_spring;
 
 import org.junit.jupiter.api.AfterAll;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;

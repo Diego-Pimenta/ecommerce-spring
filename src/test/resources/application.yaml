@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:tc:mysql:latest:///ecommerce_spring
+    username: user
+    password: password
+  flyway:
+    enabled: false

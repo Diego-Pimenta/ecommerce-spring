@@ -20,14 +20,14 @@ public class ProductConstants {
         }
     };
 
-    public static final CreateProductStockRequestDto CREATE_PRODUCT_REQUEST_DTO = new CreateProductStockRequestDto("Cigarettes", 13, new BigDecimal("3.99"), "Drugs");
-    public static final UpdateProductStockRequestDto UPDATE_PRODUCT_REQUEST_DTO = new UpdateProductStockRequestDto("Cigarettes", 7, new BigDecimal("4.99"), "Drugs", true);
-    public static final UpdateActiveStatusRequestDto UPDATE_ACTIVE_STATUS_REQUEST_DTO = new UpdateActiveStatusRequestDto(true);
+    public static final CreateProductStockRequestDto CREATE_PRODUCT_REQUEST = new CreateProductStockRequestDto("Cigarettes", 13, new BigDecimal("3.99"), "Drugs");
+    public static final UpdateProductStockRequestDto UPDATE_PRODUCT_REQUEST = new UpdateProductStockRequestDto("Cigarettes", 7, new BigDecimal("4.99"), "Drugs", true);
+    public static final UpdateActiveStatusRequestDto UPDATE_ACTIVE_STATUS_REQUEST = new UpdateActiveStatusRequestDto(true);
 
-    public static final ProductStockResponseDto PRODUCT_RESPONSE_DTO = new ProductStockResponseDto(2L, "Cigarettes", 13, new BigDecimal("3.99"), "Drugs", true);
-    public static final List<ProductStockResponseDto> PRODUCTS_RESPONSE_DTO = new ArrayList<>() {
+    public static final ProductStockResponseDto PRODUCT_RESPONSE = new ProductStockResponseDto(2L, "Cigarettes", 13, new BigDecimal("3.99"), "Drugs", true);
+    public static final List<ProductStockResponseDto> PRODUCTS_RESPONSE = new ArrayList<>() {
         {
-            add(PRODUCT_RESPONSE_DTO);
+            add(PRODUCT_RESPONSE);
         }
     };
 
