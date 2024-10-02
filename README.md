@@ -1,14 +1,29 @@
 # Backend Ecommerce Spring
 
-## Descrição
+## 📜 Descrição
 
 O projeto é uma aplicação de ecommerce capaz de criar e gerenciar produtos, estoque dos produtos, vendas e usuários.
 
-## Requisitos
+## 🚀 Tecnologias
 
-- Certifique-se de ter o Docker instalado para a execução da aplicação.
+- Java
+- Maven
+- Docker
+- Spring Boot / JPA / Validation / Security / Mail / Hateoas
+- Redis
+- MySQL / H2
+- Flyway
+- SpringDoc OpenAPI
+- MapStruct
+- JJWT
+- Mockito
+- TestContainers
 
-## Instruções de Uso
+## 🏛️ Arquitetura
+
+<img src="/docs/Class_diagram.png" alt="Diagrama de Classes">
+
+## 📦 Instruções de Uso
 
 1. Clone o repositório com o Git.
 ```bash
@@ -28,10 +43,12 @@ http://localhost:8080/api
 
 4. Para acessar a plataforma com contas já cadastradas no banco de dados, utilize os seguintes dados de login:
 
-- Admin - CPF: 12345678901, Senha: adminpass.
-- Client - CPF: 12345678902, Senha: password1.
-- Client - CPF: 12345678903, Senha: password2.
+- Admin - CPF: 12345678901 | Senha: adminpass.
+- Client - CPF: 12345678902 | Senha: password1.
+- Client - CPF: 12345678903 | Senha: password2.
 
-## Diagrama de Classes
+## ⚠️ Avisos
 
-<img src="/docs/Class_diagram.png" alt="Diagrama de Classes">
+Preste atenção que para o funcionamento adequado da aplicação é importante que **variáveis de ambiente** propriamente definidas sejam utilizadas.
+Logo, tome cautela, configure a aplicação de acordo com suas propriedades. Para alterar diretamente na aplicação e não no Docker, se atente
+para as propriedades do **banco de dados, redis, jwt e serviço de email.**

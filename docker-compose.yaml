@@ -24,12 +24,12 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - data:/var/lib/mysql
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+#      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - ecommerce
 
   backend:
-    image: diegopimenta/ecommerce-spring:v1.1
+    image: diegopimenta/ecommerce-spring:v1.2
     container_name: backend
     restart: always
     ports:
