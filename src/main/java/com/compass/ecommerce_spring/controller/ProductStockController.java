@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<ProductStockResponseDto> save(CreateProductStockRequestDto createProductStockRequestDto);
+    ResponseEntity<EntityModel<ProductStockResponseDto>> save(CreateProductStockRequestDto createProductStockRequestDto);
 
     @Operation(summary = "Retrieve a product in stock by id",
             description = "Get a product object by specifying its id",
@@ -45,7 +47,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<ProductStockResponseDto> findById(Long id);
+    ResponseEntity<EntityModel<ProductStockResponseDto>> findById(Long id);
 
     @Operation(summary = "Retrieve all products in stocks",
             description = "Get all product objects with pagination",
@@ -57,7 +59,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "401", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<List<ProductStockResponseDto>> findAll(Integer page, Integer size, String orderBy, String direction);
+    ResponseEntity<CollectionModel<EntityModel<ProductStockResponseDto>>> findAll(Integer page, Integer size, String orderBy, String direction);
 
     @Operation(summary = "Update a product in stock by id",
             description = "Modify a product object with body content by its id",
@@ -75,7 +77,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "409", description = "Conflict with existing data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<ProductStockResponseDto> update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
+    ResponseEntity<EntityModel<ProductStockResponseDto>> update(Long id, UpdateProductStockRequestDto updateProductStockRequestDto);
 
     @Operation(summary = "Update a product status in stock by id",
             description = "Modify a product object with body content by its id",
@@ -91,7 +93,7 @@ public interface ProductStockController {
                     @ApiResponse(responseCode = "404", description = "Product not found in stock",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
             })
-    ResponseEntity<ProductStockResponseDto> updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
+    ResponseEntity<EntityModel<ProductStockResponseDto>> updateStatus(Long id, UpdateActiveStatusRequestDto updateActiveStatusRequestDto);
 
     @Operation(summary = "Delete a product in stock by id",
             description = "Remove a product object by specifying its id",

@@ -8,6 +8,8 @@ import com.compass.ecommerce_spring.dto.response.ProductStockResponseDto;
 import com.compass.ecommerce_spring.service.ProductStockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,46 +35,80 @@ public class ProductStockControllerImpl implements ProductStockController {
 
     @PostMapping
     @Override
-    public ResponseEntity<ProductStockResponseDto> save(@RequestBody @Valid CreateProductStockRequestDto createProductStockRequestDto) {
-        ProductStockResponseDto productStockResponseDto = service.save(createProductStockRequestDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(productStockResponseDto.id()).toUri();
-        return ResponseEntity.created(uri).body(productStockResponseDto);
+    public ResponseEntity<EntityModel<ProductStockResponseDto>> save(@RequestBody @Valid CreateProductStockRequestDto createProductStockRequestDto) {
+        var product = service.save(createProductStockRequestDto);
+        var productModel = EntityModel.of(product);
+
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findById(product.id())).withSelfRel());
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findAll(0, 10, "name", "ASC")).withRel("products"));
+
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(product.id()).toUri();
+
+        return ResponseEntity.created(uri).body(productModel);
     }
 
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<EntityModel<ProductStockResponseDto>> findById(@PathVariable("id") Long id) {
+        var product = service.findById(id);
+        var productModel = EntityModel.of(product);
+
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findById(id)).withSelfRel());
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findAll(0, 10, "name", "ASC")).withRel("products"));
+
+        return ResponseEntity.ok(productModel);
     }
 
     @GetMapping
     @Override
-    public ResponseEntity<List<ProductStockResponseDto>> findAll(
+    public ResponseEntity<CollectionModel<EntityModel<ProductStockResponseDto>>> findAll(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
             @RequestParam(value = "direction", defaultValue = "ASC") String direction
     ) {
-        return ResponseEntity.ok(service.findAll(page, size, orderBy, direction));
+        var products = service.findAll(page, size, orderBy, direction);
+
+        var productModels = products.stream()
+                .map(product -> EntityModel.of(product,
+                        linkTo(methodOn(ProductStockControllerImpl.class).findById(product.id())).withSelfRel()))
+                .toList();
+
+        var collectionModel = CollectionModel.of(productModels,
+                linkTo(methodOn(ProductStockControllerImpl.class).findAll(page, size, orderBy, direction)).withSelfRel());
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> update(
+    public ResponseEntity<EntityModel<ProductStockResponseDto>> update(
             @PathVariable("id") Long id,
             @RequestBody @Valid UpdateProductStockRequestDto updateProductStockRequestDto
     ) {
-        return ResponseEntity.ok(service.update(id, updateProductStockRequestDto));
+        var product = service.update(id, updateProductStockRequestDto);
+        var productModel = EntityModel.of(product);
+
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findById(id)).withSelfRel());
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findAll(0, 10, "name", "ASC")).withRel("products"));
+
+        return ResponseEntity.ok(productModel);
     }
 
     @PatchMapping("/status/{id}")
     @Override
-    public ResponseEntity<ProductStockResponseDto> updateStatus(
+    public ResponseEntity<EntityModel<ProductStockResponseDto>> updateStatus(
             @PathVariable("id") Long id,
             @RequestBody @Valid UpdateActiveStatusRequestDto updateActiveStatusRequestDto
     ) {
-        return ResponseEntity.ok(service.updateStatus(id, updateActiveStatusRequestDto));
+        var product = service.updateStatus(id, updateActiveStatusRequestDto);
+        var productModel = EntityModel.of(product);
+
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findById(id)).withSelfRel());
+        productModel.add(linkTo(methodOn(ProductStockControllerImpl.class).findAll(0, 10, "name", "ASC")).withRel("products"));
+
+        return ResponseEntity.ok(productModel);
     }
 
     @DeleteMapping("/{id}")
