@@ -4,5 +4,5 @@ import jakarta.mail.MessagingException;
 
 public interface EmailService {
 
-    void sendPasswordResetEmail(String toEmail, String subject, String body) throws MessagingException;
+    void sendEmail(String toEmail, String subject, String body) throws MessagingException;
 }

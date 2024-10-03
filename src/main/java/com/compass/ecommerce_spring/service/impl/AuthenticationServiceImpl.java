@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 "If you did not request this change, please ignore this email.</em></p>" +
                 "<p>Best regards,<br>Compass UOL Team</p>";
 
-        emailService.sendPasswordResetEmail(email, subject, body);
+        emailService.sendEmail(email, subject, body);
     }
 
     @Transactional
