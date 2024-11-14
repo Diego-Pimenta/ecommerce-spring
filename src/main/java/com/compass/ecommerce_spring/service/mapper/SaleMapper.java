@@ -19,10 +19,7 @@ public interface SaleMapper extends MonetaryOperations {
             @Mapping(target = "moment", expression = "java(LocalDateTime.now())"),
             @Mapping(target = "status", expression = "java(SaleStatus.WAITING_PAYMENT)")
     })
-    Sale createSaleToEntity(User customer);
-
-    @Mapping(target = "items", source = "items")
-    Sale updateSaleToEntity(Sale sale, Set<SaleItem> items);
+    Sale toEntity(User customer);
 
     @Mapping(target = "total", expression = "java(calculateTotal(sale))")
     SaleResponseDto toDto(Sale sale);

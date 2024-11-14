@@ -9,7 +9,6 @@ import com.compass.ecommerce_spring.entity.enums.SaleStatus;
 import com.compass.ecommerce_spring.exception.custom.BusinessException;
 import com.compass.ecommerce_spring.exception.custom.ResourceNotFoundException;
 import com.compass.ecommerce_spring.repository.ProductStockRepository;
-import com.compass.ecommerce_spring.repository.SaleItemRepository;
 import com.compass.ecommerce_spring.repository.SaleRepository;
 import com.compass.ecommerce_spring.repository.UserRepository;
 import com.compass.ecommerce_spring.security.AccessAuthority;
@@ -40,7 +39,6 @@ public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final ProductStockRepository productRepository;
-    private final SaleItemRepository saleItemRepository;
     private final SaleMapper saleMapper;
     private final SaleItemMapper saleItemMapper;
     private final AccessAuthority accessAuthority;
@@ -52,7 +50,7 @@ public class SaleServiceImpl implements SaleService {
 
         var user = userRepository.findByCpf(userCpf).orElseThrow();
 
-        var sale = saleMapper.createSaleToEntity(user);
+        var sale = saleMapper.toEntity(user);
 
         var saleItems = saleRequestDto.items().stream()
                 .map(item -> {
@@ -64,13 +62,10 @@ public class SaleServiceImpl implements SaleService {
 
         validateStock(saleItems);
 
-        var createdSale = saleRepository.save(sale);
+        sale.getItems().addAll(saleItems);
 
-        var createdSaleItems = saleItems.stream()
-                .map(saleItemRepository::save)
-                .collect(Collectors.toSet());
+        var createdSale = saleRepository.save(sale); // por causa do cascade conseguimos salvar certin na tabela de itens da venda
 
-        createdSale.getItems().addAll(createdSaleItems);
         return saleMapper.toDto(createdSale);
     }
 
@@ -115,14 +110,11 @@ public class SaleServiceImpl implements SaleService {
 
         validateStock(saleItems);
 
-        saleItemRepository.deleteAll(sale.getItems());
         sale.getItems().clear();
+        sale.getItems().addAll(saleItems);
 
-        var updatedSaleItems = saleItems.stream()
-                .map(saleItemRepository::save)
-                .collect(Collectors.toSet());
+        var updatedSale = saleRepository.save(sale);
 
-        var updatedSale = saleMapper.updateSaleToEntity(sale, updatedSaleItems);
         return saleMapper.toDto(updatedSale);
     }
 
